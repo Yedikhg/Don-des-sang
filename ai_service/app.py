@@ -19,12 +19,14 @@ CORS(app, origins=[
 
 
 # ── Health check ──────────────────────────────────────────────────────────────
+@app.get("/")
 @app.get("/health")
 def health():
     return jsonify({
         "status": "ok",
         "service": "urgence-sang-ai",
         "version": "1.0.0",
+        "message": "Bienvenue sur l'API IA d'Urgence-Sang",
         "gemini": "configured" if os.getenv("GEMINI_API_KEY") else "not configured"
     })
 
