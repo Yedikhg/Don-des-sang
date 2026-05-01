@@ -1,0 +1,35 @@
+name: Sync AI Service to Hugging Face Space
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ai_service/**'
+      - '.github/workflows/sync_hf.yml'
+
+jobs:
+  sync-to-hub:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Push to Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          # Configure Git
+          git config --global user.email "bot@urgence-sang.com"
+          git config --global user.name "HF Sync Bot"
+          
+          # Initialize a new temporary git repo in the ai_service folder
+          cd ai_service
+          git init
+          git checkout -b main
+          git add .
+          git commit -m "Sync from GitHub Actions"
+          
+          # Push force to Hugging Face
+          git push -f https://yedidya1234:$HF_TOKEN@huggingface.co/spaces/yedidya1234/urgence-sang-ai main
