@@ -31,5 +31,6 @@ jobs:
           git add .
           git commit -m "Sync from GitHub Actions"
           
-          # Push force to Hugging Face
-          git push -f https://yedidya1234:$HF_TOKEN@huggingface.co/spaces/yedidya1234/urgence-sang-ai main
+          # Push force to Hugging Face using the correct auth format
+          git remote add space https://yedidya1234:$HF_TOKEN@huggingface.co/spaces/yedidya1234/urgence-sang-ai
+          git push -f space main
