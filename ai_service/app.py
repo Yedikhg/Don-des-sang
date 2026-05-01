@@ -1,4 +1,4 @@
-﻿import os
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -13,7 +13,8 @@ CORS(app, origins=[
     "http://localhost:5173",
     "http://localhost:5174",
     "http://localhost:8080",
-    "https://urgence-sang.netlify.app"
+    "https://urgence-sang.netlify.app",
+    "*" # Autoriser toutes les origines pour la production
 ])
 
 
@@ -150,7 +151,7 @@ def motivate():
 
 # ── Entree principale ─────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 5001))
+    port = int(os.getenv("PORT", 7860)) # Hugging Face requires port 7860
     debug = os.getenv("FLASK_DEBUG", "false").lower() == "true"
     print(f"[AI] Urgence-Sang AI Service sur le port {port}")
     app.run(host="0.0.0.0", port=port, debug=debug)
