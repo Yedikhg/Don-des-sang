@@ -1,4 +1,13 @@
-﻿# Urgence-Sang — Micro-service IA
+---
+title: Urgence Sang AI
+emoji: 🩸
+colorFrom: red
+colorTo: gray
+sdk: docker
+app_port: 7860
+---
+
+# Urgence-Sang — Micro-service IA
 
 Service Flask Python qui fournit l intelligence artificielle a l application Urgence-Sang.
 
