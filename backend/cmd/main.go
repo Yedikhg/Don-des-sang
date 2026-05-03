@@ -37,9 +37,10 @@ func main() {
 		Format: "[${time}] ${status} ${method} ${path} ${latency}\n",
 	}))
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*",
-		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
-		AllowMethods: "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+		AllowOrigins:     "https://blood-emergency-azure.vercel.app,http://localhost:5173,http://localhost:5174,http://localhost:8080,http://localhost:3000",
+		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
+		AllowMethods:     "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+		AllowCredentials: true,
 	}))
 
 	app.Get("/health", func(c *fiber.Ctx) error {
