@@ -13,7 +13,7 @@ services:
       - key: JWT_SECRET
         sync: false
       - key: PORT
-        value: 10000
+        value: "8080"
       - key: JWT_EXPIRATION_HOURS
         value: 24
       - key: MAX_UPLOAD_SIZE_MB
