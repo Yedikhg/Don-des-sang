@@ -36,3 +36,5 @@ ai_service/*.pyc
 
 # OS files
 backend.pid
+nnn
+image.png

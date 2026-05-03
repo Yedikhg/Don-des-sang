@@ -1,4 +1,6 @@
 import { useEffect, useState, useMemo } from 'react'
+import LanguageSwitcher from '../components/LanguageSwitcher'
+import { useTranslation } from 'react-i18next'
 import { pushDonorGpsToServer } from '../lib/donorLocationSync'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
@@ -59,6 +61,7 @@ function getDaysUntilEligible(nextEligibleAt: string | null | undefined): number
 }
 
 export default function DonorDashboard() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { currentUser, logout } = useApp()
   const [currentView, setCurrentView] = useState<'dashboard' | 'history' | 'stats' | 'settings'>('dashboard')
@@ -276,7 +279,7 @@ export default function DonorDashboard() {
             </div>
             <div>
               <h1 className="font-bold text-gray-900 text-sm">Urgence-Sang</h1>
-              <p className="text-xs text-gray-500">Espace Donneur</p>
+              <p className="text-xs text-gray-500">{t('donor_dashboard.space')}</p>
             </div>
           </div>
 
@@ -291,7 +294,7 @@ export default function DonorDashboard() {
               }`}
             >
               <LayoutDashboard className="w-5 h-5" />
-              Tableau de bord
+              {t('donor_dashboard.dashboard')}
             </button>
             <button 
               onClick={() => setCurrentView('history')}
@@ -302,7 +305,7 @@ export default function DonorDashboard() {
               }`}
             >
               <History className="w-5 h-5" />
-              Historique
+              {t('donor_dashboard.history')}
             </button>
             <button 
               onClick={() => setCurrentView('stats')}
@@ -313,7 +316,7 @@ export default function DonorDashboard() {
               }`}
             >
               <BarChart3 className="w-5 h-5" />
-              Statistiques
+              {t('donor_dashboard.stats')}
             </button>
             <button 
               onClick={() => setCurrentView('settings')}
@@ -324,7 +327,7 @@ export default function DonorDashboard() {
               }`}
             >
               <Settings className="w-5 h-5" />
-              Paramètres
+              {t('donor_dashboard.settings')}
             </button>
             {activeDonationAlertId && (
               <button
@@ -332,7 +335,7 @@ export default function DonorDashboard() {
                 className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 text-emerald-700 bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200"
               >
                 <Navigation className="w-5 h-5" />
-                Don en cours
+                {t('donor_dashboard.active_donation')}
               </button>
             )}
           </nav>
@@ -353,7 +356,7 @@ export default function DonorDashboard() {
               className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-red-50 hover:text-red-600 active:bg-red-100 rounded-lg transition-all duration-200"
             >
               <LogOut className="w-4 h-4" />
-              Déconnexion
+              {t('donor_dashboard.logout')}
             </button>
           </div>
         </div>
@@ -381,18 +384,19 @@ export default function DonorDashboard() {
               </button>
               <div className="flex items-center gap-3">
                 <div>
-                  <h2 className="text-lg font-bold text-gray-900">Bienvenue, {currentUser?.first_name || 'Donneur'}</h2>
-                  <p className="text-sm text-gray-500">Groupe sanguin: <span className="font-semibold text-red-600">{currentUser?.blood_type || '-'}</span></p>
+                  <h2 className="text-lg font-bold text-gray-900">{t('donor_dashboard.welcome')} {currentUser?.first_name || 'Donneur'}</h2>
+                  <p className="text-sm text-gray-500">{t('donor_dashboard.blood_type')} <span className="font-semibold text-red-600">{currentUser?.blood_type || '-'}</span></p>
                 </div>
                 <span className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-md border border-emerald-200">
                   <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-                  Actif
+                  {t('donor_dashboard.active')}
                 </span>
               </div>
             </div>
             <div className="flex items-center gap-3">
+              <LanguageSwitcher className="text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-lg" />
               <button 
-                onClick={() => toast.info('Aucune nouvelle notification')}
+                onClick={() => toast.info(t('donor_dashboard.no_notifications'))}
                 className="relative p-2.5 hover:bg-gray-100 active:bg-gray-200 rounded-lg transition-all duration-200 hover:scale-105"
               >
                 <Bell className="w-5 h-5 text-gray-600 hover:text-gray-900 transition-colors" />
@@ -403,7 +407,7 @@ export default function DonorDashboard() {
                 className="flex items-center gap-2 px-4 py-2.5 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white text-sm font-semibold rounded-lg transition-all duration-200 shadow-sm hover:shadow-md hover:scale-105"
               >
                 <Target className="w-4 h-4" />
-                <span className="hidden sm:inline">Alertes disponibles</span>
+                <span className="hidden sm:inline">{t('donor_dashboard.available_alerts')}</span>
               </button>
             </div>
           </div>
@@ -417,28 +421,28 @@ export default function DonorDashboard() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 {[
                   { 
-                    label: 'Dons effectués', 
+                    label: t('donor_dashboard.kpi.donations'), 
                     value: stats?.donation_count ?? 0, 
                     icon: HeartPulse, 
                     color: stats?.donation_count ? 'text-red-600' : 'text-gray-600',
                     bg: stats?.donation_count ? 'bg-red-50' : 'bg-gray-50'
                   },
                   { 
-                    label: 'Vies impactées', 
+                    label: t('donor_dashboard.kpi.impact'), 
                     value: stats?.lives_impacted ?? 0, 
                     icon: Users, 
                     color: stats?.lives_impacted ? 'text-blue-600' : 'text-gray-600',
                     bg: stats?.lives_impacted ? 'bg-blue-50' : 'bg-gray-50'
                   },
                   {
-                    label: 'Taux de réponse',
+                    label: t('donor_dashboard.kpi.response_rate'),
                     value: `${responseRate}%`,
                     icon: TrendingUp,
                     color: responseRate > 0 ? 'text-emerald-600' : 'text-gray-600',
                     bg: responseRate > 0 ? 'bg-emerald-50' : 'bg-gray-50',
                   },
                   { 
-                    label: 'Score d\'impact', 
+                    label: t('donor_dashboard.kpi.impact_score'), 
                     value: stats?.impact_score ?? 0, 
                     icon: Award, 
                     color: stats?.impact_score ? 'text-amber-600' : 'text-gray-600',

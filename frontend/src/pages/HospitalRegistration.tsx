@@ -12,6 +12,7 @@ import {
   Upload,
 } from 'lucide-react'
 import { type ComponentType, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { useApp } from '../context/AppContext'
@@ -46,13 +47,6 @@ type LeafletMapComponents = {
   TileLayer: ComponentType<any>
   useMapEvents: (handlers: Record<string, (...args: any[]) => void>) => void
 }
-
-const STEP_LABELS: Array<{ id: Step; title: string; subtitle: string }> = [
-  { id: 1, title: 'Informations', subtitle: 'Coordonnées de l’hôpital' },
-  { id: 2, title: 'Documents', subtitle: 'Licence et justificatifs' },
-  { id: 3, title: 'Localisation', subtitle: 'Position de l’établissement' },
-  { id: 4, title: 'Confirmation', subtitle: 'Compte créé avec succès' },
-]
 
 const INITIAL_FORM: RegistrationForm = {
   hospital_name: '',
@@ -192,8 +186,16 @@ function SafeLocationPicker({
 }
 
 export default function HospitalRegistration() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { login } = useApp()
+
+  const STEP_LABELS: Array<{ id: Step; title: string; subtitle: string }> = [
+    { id: 1, title: t('hospital_registration.steps.info'), subtitle: t('hospital_registration.steps.info_sub') },
+    { id: 2, title: t('hospital_registration.steps.documents'), subtitle: t('hospital_registration.steps.documents_sub') },
+    { id: 3, title: t('hospital_registration.steps.location'), subtitle: t('hospital_registration.steps.location_sub') },
+    { id: 4, title: t('hospital_registration.steps.confirmation'), subtitle: t('hospital_registration.steps.confirmation_sub') },
+  ]
 
   const [step, setStep] = useState<Step>(1)
   const [form, setForm] = useState<RegistrationForm>(INITIAL_FORM)
@@ -404,14 +406,14 @@ export default function HospitalRegistration() {
 
       login(response.data.token, response.data.user)
       setStep(4)
-      toast.success('Inscription finalisée avec succès.')
+      toast.success(t('hospital_registration.registration_success'))
 
       redirectTimeoutRef.current = window.setTimeout(() => {
         navigate('/hospital/dashboard')
       }, 1400)
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : 'L’inscription a échoué. Veuillez réessayer.'
+        error instanceof Error ? error.message : t('hospital_registration.registration_error')
       toast.error(message)
     } finally {
       setSubmitting(false)
@@ -471,9 +473,9 @@ export default function HospitalRegistration() {
           </div>
 
           <div className='mt-8 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-white/70'>
-            <p className='font-medium text-white'>Documents acceptés</p>
+            <p className='font-medium text-white'>{t('hospital_registration.accepted_docs')}</p>
             <p className='mt-2'>
-              PDF, PNG ou JPG. Le premier document terminé sera envoyé au backend comme licence officielle.
+              {t('hospital_registration.accepted_docs_desc')}
             </p>
           </div>
         </aside>
@@ -588,7 +590,9 @@ export default function HospitalRegistration() {
                     <div className='rounded-full bg-white p-4 text-red-500 shadow-sm'>
                       <Upload className='h-7 w-7' />
                     </div>
-                    <p className='mt-4 text-lg font-semibold'>Sélectionner des documents</p>
+                    <p className='mt-4 text-lg font-semibold'>
+                      <span className='text-red-500 hover:text-red-600'>{t('hospital_registration.click_to_upload')}</span> {t('hospital_registration.or_drag_drop')}
+                    </p>
                     <p className='mt-2 max-w-xl text-sm text-slate-600'>
                       Formats autorisés : PDF, JPG, JPEG, PNG. Le premier fichier terminé sera utilisé comme licence (`license`).
                     </p>

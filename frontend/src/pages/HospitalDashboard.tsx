@@ -1,6 +1,8 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
+import LanguageSwitcher from '../components/LanguageSwitcher'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { hospital as hospitalApi } from '../services/api'
@@ -125,6 +127,7 @@ function DonEnCoursMapFitBounds({
 }
 
 export default function HospitalDashboard() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { currentUser, logout, token, userType } = useApp()
   const [currentView, setCurrentView] = useState<'dashboard' | 'in_progress' | 'history' | 'stats' | 'settings'>('dashboard')
@@ -434,7 +437,7 @@ export default function HospitalDashboard() {
             </div>
             <div>
               <h1 className="font-bold text-gray-900 text-sm">Urgence-Sang</h1>
-              <p className="text-xs text-gray-500">Espace Hôpital</p>
+              <p className="text-xs text-gray-500">{t('hospital_dashboard.space')}</p>
             </div>
           </div>
 
@@ -449,7 +452,7 @@ export default function HospitalDashboard() {
               }`}
             >
               <LayoutDashboard className="w-5 h-5" />
-              Tableau de bord
+              {t('hospital_dashboard.dashboard')}
             </button>
             <button
               onClick={() => setCurrentView('in_progress')}
@@ -471,7 +474,7 @@ export default function HospitalDashboard() {
               }`}
             >
               <History className="w-5 h-5" />
-              Historique
+              {t('hospital_dashboard.history')}
             </button>
             <button 
               onClick={() => setCurrentView('stats')}
@@ -482,7 +485,7 @@ export default function HospitalDashboard() {
               }`}
             >
               <BarChart3 className="w-5 h-5" />
-              Statistiques
+              {t('hospital_dashboard.stats')}
             </button>
             <button 
               onClick={() => setCurrentView('settings')}
@@ -493,7 +496,7 @@ export default function HospitalDashboard() {
               }`}
             >
               <Settings className="w-5 h-5" />
-              Paramètres
+              {t('hospital_dashboard.settings')}
             </button>
           </nav>
 
@@ -513,7 +516,7 @@ export default function HospitalDashboard() {
               className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-red-50 hover:text-red-600 active:bg-red-100 rounded-lg transition-all duration-200"
             >
               <LogOut className="w-4 h-4" />
-              Déconnexion
+              {t('hospital_dashboard.logout')}
             </button>
           </div>
         </div>
@@ -541,18 +544,19 @@ export default function HospitalDashboard() {
               </button>
               <div className="flex items-center gap-3">
                 <div>
-                  <h2 className="text-lg font-bold text-gray-900">Bienvenue, {currentUser?.first_name || 'Hôpital'}</h2>
-                  <p className="text-sm text-gray-500">Vue d'ensemble de votre activité</p>
+                  <h2 className="text-lg font-bold text-gray-900">{t('hospital_dashboard.welcome')} {currentUser?.first_name || 'Hôpital'}</h2>
+                  <p className="text-sm text-gray-500">{t('hospital_dashboard.overview')}</p>
                 </div>
                 <span className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-md border border-emerald-200">
                   <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-                  Vérifié
+                  {t('hospital_dashboard.verified')}
                 </span>
               </div>
             </div>
             <div className="flex items-center gap-3">
+              <LanguageSwitcher className="text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-lg" />
               <button 
-                onClick={() => toast.info('Aucune nouvelle notification')}
+                onClick={() => toast.info(t('hospital_dashboard.no_notifications'))}
                 className="relative p-2.5 hover:bg-gray-100 active:bg-gray-200 rounded-lg transition-all duration-200 hover:scale-105"
               >
                 <Bell className="w-5 h-5 text-gray-600 hover:text-gray-900 transition-colors" />
@@ -563,7 +567,7 @@ export default function HospitalDashboard() {
                 className="flex items-center gap-2 px-4 py-2.5 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white text-sm font-semibold rounded-lg transition-all duration-200 shadow-sm hover:shadow-md hover:scale-105"
               >
                 <Zap className="w-4 h-4" />
-                <span className="hidden sm:inline">Nouvelle alerte</span>
+                <span className="hidden sm:inline">{t('hospital_dashboard.new_alert')}</span>
               </button>
             </div>
           </div>
@@ -577,28 +581,28 @@ export default function HospitalDashboard() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 {[
                   { 
-                    label: 'Alertes ce mois', 
+                    label: t('hospital_dashboard.kpi.alerts'), 
                     value: stats?.alerts_this_month ?? 0, 
                     icon: Zap, 
                     color: stats?.alerts_this_month ? 'text-red-600' : 'text-gray-600',
                     bg: stats?.alerts_this_month ? 'bg-red-50' : 'bg-gray-50'
                   },
                   { 
-                    label: 'Donneurs notifiés', 
+                    label: t('hospital_dashboard.kpi.notified'), 
                     value: stats?.donors_notified ?? 0, 
                     icon: Users, 
                     color: stats?.donors_notified ? 'text-blue-600' : 'text-gray-600',
                     bg: stats?.donors_notified ? 'bg-blue-50' : 'bg-gray-50'
                   },
                   {
-                    label: 'Taux de conversion',
+                    label: t('hospital_dashboard.kpi.conversion'),
                     value: `${stats && stats.donors_notified > 0 ? Math.round((stats.donors_arrived / stats.donors_notified) * 100) : 0}%`,
                     icon: TrendingUp,
                     color: stats && stats.donors_notified > 0 ? 'text-emerald-600' : 'text-gray-600',
                     bg: stats && stats.donors_notified > 0 ? 'bg-emerald-50' : 'bg-gray-50',
                   },
                   { 
-                    label: 'Arrivées confirmées', 
+                    label: t('hospital_dashboard.kpi.arrived'), 
                     value: stats?.donors_arrived ?? 0, 
                     icon: CheckCircle, 
                     color: stats?.donors_arrived ? 'text-emerald-600' : 'text-gray-600',

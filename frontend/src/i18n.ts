@@ -148,16 +148,16 @@ const fr = {
       step2: {
         title: 'Votre groupe sanguin',
         subtitle: 'Sélectionnez votre groupe dans la grille ci-dessous',
-        dont_know_blood_type: 'Je ne connais pas mon groupe sanguin — Obtenir de l\\'aide',
+        dont_know_blood_type: 'Je ne connais pas mon groupe sanguin — Obtenir de l\'aide',
         compatibility: 'Compatible avec :'
       },
       step3: {
         title: 'Votre localisation',
-        subtitle: 'Pour que l\\'IA puisse vous matcher avec les hôpitaux proches de chez vous',
+        subtitle: 'Pour que l\'IA puisse vous matcher avec les hôpitaux proches de chez vous',
         locate_me: 'Me localiser maintenant',
         locating: 'Localisation en cours...',
         location_saved: 'Position enregistrée ✓',
-        privacy_note: '🔒 Votre position n\\'est partagée avec les hôpitaux qu\\'en cas d\\'alerte active. Elle est chiffrée et supprimée après chaque session.',
+        privacy_note: '🔒 Votre position n\'est partagée avec les hôpitaux qu\'en cas d\'alerte active. Elle est chiffrée et supprimée après chaque session.',
         or: 'ou',
         manual_location: 'Définir ma position manuellement',
         manual_location_set: 'Position définie sur Casablanca'
@@ -165,14 +165,14 @@ const fr = {
       chat: {
         title: 'Assistant IA — Urgence-Sang',
         subtitle: 'Conseiller en santé',
-        greeting: 'Bonjour ! Je suis l\\'assistant IA d\\'Urgence-Sang. Pour vérifier votre aptitude au don, pouvez-vous vous déplacer maintenant ?',
-        unavailable: 'Je n\\'ai pas pu analyser votre réponse.',
+        greeting: 'Bonjour ! Je suis l\'assistant IA d\'Urgence-Sang. Pour vérifier votre aptitude au don, pouvez-vous vous déplacer maintenant ?',
+        unavailable: 'Je n\'ai pas pu analyser votre réponse.',
         service_unavailable: 'Service IA indisponible. Veuillez réessayer.',
         placeholder: 'Écrivez votre réponse...'
       },
       back: '← Retour',
       continue: 'Continuer',
-      finalize: 'Finaliser l\\'inscription',
+      finalize: 'Finaliser l\'inscription',
       submitting: 'Inscription...',
       success_title: 'Bienvenue,',
       success_subtitle: 'Vous êtes maintenant un',
@@ -180,9 +180,9 @@ const fr = {
       success_note: 'Activez votre disponibilité depuis votre dashboard pour commencer à recevoir des alertes.',
       go_to_dashboard: 'Accéder à mon dashboard',
       registration_success: 'Inscription réussie ! Bienvenue dans la famille Urgence-Sang 🎉',
-      registration_error: 'Erreur lors de l\\'inscription',
-      location_error: 'Impossible d\\'accéder à votre position. Vérifiez les permissions du navigateur.',
-      not_eligible: 'Vous n\\'êtes pas éligible au don pour le moment.',
+      registration_error: 'Erreur lors de l\'inscription',
+      location_error: 'Impossible d\'accéder à votre position. Vérifiez les permissions du navigateur.',
+      not_eligible: 'Vous n\'êtes pas éligible au don pour le moment.',
       eligible: 'Vous êtes éligible ! ✅'
     },
     hospital_registration: {
@@ -261,6 +261,45 @@ const fr = {
       creating_account: 'Création du compte…',
       registration_success: 'Inscription finalisée avec succès.',
       registration_error: 'L’inscription a échoué. Veuillez réessayer.'
+    },
+    donor_dashboard: {
+      space: 'Espace Donneur',
+      dashboard: 'Tableau de bord',
+      history: 'Historique',
+      stats: 'Statistiques',
+      settings: 'Paramètres',
+      active_donation: 'Don en cours',
+      logout: 'Déconnexion',
+      welcome: 'Bienvenue,',
+      blood_type: 'Groupe sanguin:',
+      active: 'Actif',
+      no_notifications: 'Aucune nouvelle notification',
+      available_alerts: 'Alertes disponibles',
+      kpi: {
+        donations: 'Dons effectués',
+        impact: 'Vies impactées',
+        response_rate: 'Taux de réponse',
+        impact_score: 'Score d\'impact'
+      }
+    },
+    hospital_dashboard: {
+      space: 'Espace Hôpital',
+      dashboard: 'Tableau de bord',
+      history: 'Historique',
+      stats: 'Statistiques',
+      settings: 'Paramètres',
+      logout: 'Déconnexion',
+      welcome: 'Bienvenue,',
+      overview: 'Vue d\'ensemble de votre activité',
+      verified: 'Vérifié',
+      no_notifications: 'Aucune nouvelle notification',
+      new_alert: 'Nouvelle alerte',
+      kpi: {
+        alerts: 'Alertes ce mois',
+        notified: 'Donneurs notifiés',
+        conversion: 'Taux de conversion',
+        arrived: 'Arrivées confirmées'
+      }
     }
   }
 };
@@ -525,6 +564,45 @@ const en = {
       creating_account: 'Creating account…',
       registration_success: 'Registration completed successfully.',
       registration_error: 'Registration failed. Please try again.'
+    },
+    donor_dashboard: {
+      space: 'Donor Space',
+      dashboard: 'Dashboard',
+      history: 'History',
+      stats: 'Statistics',
+      settings: 'Settings',
+      active_donation: 'Active Donation',
+      logout: 'Logout',
+      welcome: 'Welcome,',
+      blood_type: 'Blood type:',
+      active: 'Active',
+      no_notifications: 'No new notifications',
+      available_alerts: 'Available alerts',
+      kpi: {
+        donations: 'Donations made',
+        impact: 'Lives impacted',
+        response_rate: 'Response rate',
+        impact_score: 'Impact score'
+      }
+    },
+    hospital_dashboard: {
+      space: 'Hospital Space',
+      dashboard: 'Dashboard',
+      history: 'History',
+      stats: 'Statistics',
+      settings: 'Settings',
+      logout: 'Logout',
+      welcome: 'Welcome,',
+      overview: 'Activity overview',
+      verified: 'Verified',
+      no_notifications: 'No new notifications',
+      new_alert: 'New alert',
+      kpi: {
+        alerts: 'Alerts this month',
+        notified: 'Donors notified',
+        conversion: 'Conversion rate',
+        arrived: 'Confirmed arrivals'
+      }
     }
   }
 };
@@ -789,6 +867,45 @@ const ar = {
       creating_account: 'جارٍ إنشاء الحساب…',
       registration_success: 'تم التسجيل بنجاح.',
       registration_error: 'فشل التسجيل. يرجى المحاولة مرة أخرى.'
+    },
+    donor_dashboard: {
+      space: 'مساحة المتبرع',
+      dashboard: 'لوحة القيادة',
+      history: 'تاريخ',
+      stats: 'إحصائيات',
+      settings: 'إعدادات',
+      active_donation: 'تبرع نشط',
+      logout: 'تسجيل خروج',
+      welcome: 'مرحبا،',
+      blood_type: 'فصيلة الدم:',
+      active: 'نشط',
+      no_notifications: 'لا توجد إشعارات جديدة',
+      available_alerts: 'تنبيهات متاحة',
+      kpi: {
+        donations: 'التبرعات المقدمة',
+        impact: 'الأرواح المتأثرة',
+        response_rate: 'معدل الاستجابة',
+        impact_score: 'نقاط التأثير'
+      }
+    },
+    hospital_dashboard: {
+      space: 'مساحة المستشفى',
+      dashboard: 'لوحة القيادة',
+      history: 'تاريخ',
+      stats: 'إحصائيات',
+      settings: 'إعدادات',
+      logout: 'تسجيل خروج',
+      welcome: 'مرحبا،',
+      overview: 'نظرة عامة على النشاط',
+      verified: 'تم التحقق',
+      no_notifications: 'لا توجد إشعارات جديدة',
+      new_alert: 'تنبيه جديد',
+      kpi: {
+        alerts: 'تنبيهات هذا الشهر',
+        notified: 'المتبرعين المخطرين',
+        conversion: 'معدل التحويل',
+        arrived: 'الوصول المؤكد'
+      }
     }
   }
 };

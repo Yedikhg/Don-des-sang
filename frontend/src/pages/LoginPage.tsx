@@ -7,6 +7,7 @@ import { auth as authApi } from '../services/api'
 import { useApp } from '../context/AppContext'
 import type { BackendUser } from '../context/AppContext'
 import { useTranslation } from 'react-i18next'
+import LanguageSwitcher from '../components/LanguageSwitcher'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -49,7 +50,10 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 relative">
+      <div className="absolute top-4 right-4">
+        <LanguageSwitcher className="text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-100 rounded-lg shadow-sm border border-slate-200" />
+      </div>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
