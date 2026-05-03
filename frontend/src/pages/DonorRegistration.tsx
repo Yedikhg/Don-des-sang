@@ -19,6 +19,7 @@ import { auth as authApi, ai as aiApi } from '../services/api'
 import type { ChatMessage } from '../services/api'
 import { useApp } from '../context/AppContext'
 import type { BackendUser } from '../context/AppContext'
+import { useTranslation } from 'react-i18next'
 
 const bloodTypes: BloodType[] = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
 
@@ -38,15 +39,10 @@ interface UIMessage {
   text: string
 }
 
-const steps = [
-  { id: 1, label: "Profil", icon: User },
-  { id: 2, label: "Groupe sanguin", icon: Heart },
-  { id: 3, label: "Localisation", icon: MapPin },
-]
-
 export default function DonorRegistration() {
   const navigate = useNavigate()
   const { login } = useApp()
+  const { t } = useTranslation()
   const [currentStep, setCurrentStep] = useState(1)
   const [selectedBloodType, setSelectedBloodType] = useState<BloodType | null>(null)
   const [location, setLocation] = useState<{ lat: number; lng: number; address?: string } | null>(null)
@@ -58,6 +54,12 @@ export default function DonorRegistration() {
   const [chatTyping, setChatTyping] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [done, setDone] = useState(false)
+
+  const steps = [
+    { id: 1, label: t('donor_registration.steps.profile'), icon: User },
+    { id: 2, label: t('donor_registration.steps.blood_type'), icon: Heart },
+    { id: 3, label: t('donor_registration.steps.location'), icon: MapPin },
+  ]
 
   const [form, setForm] = useState({
     firstName: '',
@@ -78,11 +80,11 @@ export default function DonorRegistration() {
       (pos) => {
         setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude, address: 'Position GPS détectée' })
         setLocating(false)
-        toast.success('Position enregistrée avec succès !')
+        toast.success(t('donor_registration.location_saved'))
       },
       () => {
         setLocating(false)
-        toast.error('Impossible d\'accéder à votre position. Vérifiez les permissions du navigateur.')
+        toast.error(t('donor_registration.location_error'))
       }
     )
   }
@@ -90,7 +92,7 @@ export default function DonorRegistration() {
   const openChat = () => {
     setChatOpen(true)
     if (chatMessages.length === 0) {
-      const greeting = "Bonjour ! Je suis l'assistant IA d'Urgence-Sang. Pour vérifier votre aptitude au don, pouvez-vous vous déplacer maintenant ?"
+      const greeting = t('donor_registration.chat.greeting')
       setChatMessages([{ role: 'bot', text: greeting }])
       setChatHistory([])
     }
@@ -106,16 +108,16 @@ export default function DonorRegistration() {
     const newHistory: ChatMessage[] = [...chatHistory, { role: 'user', content: text }]
     try {
       const res = await aiApi.chat(text, chatHistory, form.firstName, selectedBloodType ?? '')
-      const botMsg = res.reply ?? "Je n'ai pas pu analyser votre réponse."
+      const botMsg = res.reply ?? t('donor_registration.chat.unavailable')
       setChatMessages((prev) => [...prev, { role: 'bot', text: botMsg }])
       setChatHistory([...newHistory, { role: 'assistant', content: botMsg }])
       if (res.eligible === false) {
-        toast.error('Vous n\'êtes pas éligible au don pour le moment.')
+        toast.error(t('donor_registration.not_eligible'))
       } else if (res.eligible === true) {
-        toast.success('Vous êtes éligible ! ✅')
+        toast.success(t('donor_registration.eligible'))
       }
     } catch {
-      setChatMessages((prev) => [...prev, { role: 'bot', text: 'Service IA indisponible. Veuillez réessayer.' }])
+      setChatMessages((prev) => [...prev, { role: 'bot', text: t('donor_registration.chat.service_unavailable') }])
     } finally {
       setChatTyping(false)
     }
@@ -144,9 +146,9 @@ export default function DonorRegistration() {
       })
       login(res.data.token, res.data.user as BackendUser)
       setDone(true)
-      toast.success('Inscription réussie ! Bienvenue dans la famille Urgence-Sang 🎉')
+      toast.success(t('donor_registration.registration_success'))
     } catch (err: unknown) {
-      toast.error((err as Error).message ?? 'Erreur lors de l\'inscription')
+      toast.error((err as Error).message ?? t('donor_registration.registration_error'))
     } finally {
       setSubmitting(false)
     }
@@ -168,22 +170,22 @@ export default function DonorRegistration() {
           >
             <Heart className="w-12 h-12 text-rose-600 fill-rose-100" />
           </motion.div>
-          <h1 className="text-2xl font-black text-slate-900 mb-2">Bienvenue, {form.firstName} !</h1>
+          <h1 className="text-2xl font-black text-slate-900 mb-2">{t('donor_registration.success_title')} {form.firstName} !</h1>
           <p className="text-slate-500 mb-2">
-            Vous êtes maintenant un <strong className="text-rose-600">Héros Urgence-Sang</strong>.
+            {t('donor_registration.success_subtitle')} <strong className="text-rose-600">{t('donor_registration.success_hero')}</strong>.
           </p>
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-rose-50 rounded-xl text-rose-700 font-bold text-lg mb-6">
             <Heart className="w-5 h-5" />
             {selectedBloodType}
           </div>
           <p className="text-slate-400 text-sm mb-8">
-            Activez votre disponibilité depuis votre dashboard pour commencer à recevoir des alertes.
+            {t('donor_registration.success_note')}
           </p>
           <button
             onClick={() => navigate('/donor/dashboard')}
             className="w-full py-3.5 bg-rose-600 text-white font-bold rounded-2xl hover:bg-rose-700 transition-colors text-lg"
           >
-            Accéder à mon dashboard
+            {t('donor_registration.go_to_dashboard')}
           </button>
         </motion.div>
       </div>
@@ -198,8 +200,8 @@ export default function DonorRegistration() {
           <div className="inline-flex items-center justify-center w-14 h-14 bg-rose-600 rounded-2xl mb-4 shadow-lg shadow-rose-200">
             <Heart className="w-7 h-7 text-white" />
           </div>
-          <h1 className="text-2xl font-black text-slate-900">Devenir Donneur</h1>
-          <p className="text-slate-500 mt-1">Créez votre profil héros en 3 étapes</p>
+          <h1 className="text-2xl font-black text-slate-900">{t('donor_registration.title')}</h1>
+          <p className="text-slate-500 mt-1">{t('donor_registration.subtitle')}</p>
         </div>
 
         {/* Steps indicator */}
@@ -247,81 +249,81 @@ export default function DonorRegistration() {
             {/* Step 1: Profile */}
             {currentStep === 1 && (
               <div>
-                <h2 className="text-xl font-bold text-slate-900 mb-1">Votre profil</h2>
-                <p className="text-slate-500 text-sm mb-6">Informations personnelles de base</p>
+                <h2 className="text-xl font-bold text-slate-900 mb-1">{t('donor_registration.step1.title')}</h2>
+                <p className="text-slate-500 text-sm mb-6">{t('donor_registration.step1.subtitle')}</p>
 
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-semibold text-slate-700 mb-1.5">Prénom *</label>
+                      <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('donor_registration.step1.first_name')} *</label>
                       <input
                         name="firstName"
                         value={form.firstName}
                         onChange={handleFormChange}
-                        placeholder="Ahmed"
+                        placeholder={t('donor_registration.step1.first_name_placeholder')}
                         className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-slate-700 mb-1.5">Nom *</label>
+                      <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('donor_registration.step1.last_name')} *</label>
                       <input
                         name="lastName"
                         value={form.lastName}
                         onChange={handleFormChange}
-                        placeholder="Benali"
+                        placeholder={t('donor_registration.step1.last_name_placeholder')}
                         className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">Email *</label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('donor_registration.step1.email')} *</label>
                     <input
                       name="email"
                       type="email"
                       value={form.email}
                       onChange={handleFormChange}
-                      placeholder="ahmed@email.com"
+                      placeholder={t('donor_registration.step1.email_placeholder')}
                       className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">Mot de passe *</label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('donor_registration.step1.password')} *</label>
                     <input
                       name="password"
                       type="password"
                       value={form.password}
                       onChange={handleFormChange}
-                      placeholder="Minimum 8 caractères"
+                      placeholder={t('donor_registration.step1.password_placeholder')}
                       className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">Téléphone *</label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('donor_registration.step1.phone')} *</label>
                     <input
                       name="phone"
                       value={form.phone}
                       onChange={handleFormChange}
-                      placeholder="+212 6XX XX XX XX"
+                      placeholder={t('donor_registration.step1.phone_placeholder')}
                       className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">Âge *</label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('donor_registration.step1.age')} *</label>
                     <input
                       name="age"
                       type="number"
                       value={form.age}
                       onChange={handleFormChange}
-                      placeholder="25"
+                      placeholder={t('donor_registration.step1.age_placeholder')}
                       min="18"
                       max="70"
                       className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
                     />
-                    <p className="text-xs text-slate-400 mt-1">Le don de sang est autorisé entre 18 et 70 ans</p>
+                    <p className="text-xs text-slate-400 mt-1">{t('donor_registration.step1.age_note')}</p>
                   </div>
                 </div>
               </div>
@@ -330,9 +332,9 @@ export default function DonorRegistration() {
             {/* Step 2: Blood Type */}
             {currentStep === 2 && (
               <div>
-                <h2 className="text-xl font-bold text-slate-900 mb-1">Votre groupe sanguin</h2>
+                <h2 className="text-xl font-bold text-slate-900 mb-1">{t('donor_registration.step2.title')}</h2>
                 <p className="text-slate-500 text-sm mb-6">
-                  Sélectionnez votre groupe dans la grille ci-dessous
+                  {t('donor_registration.step2.subtitle')}
                 </p>
 
                 <div className="grid grid-cols-4 gap-3 mb-6">
@@ -359,7 +361,7 @@ export default function DonorRegistration() {
                   >
                     <p className="text-sm font-bold text-rose-800 mb-1">{selectedBloodType} — {bloodTypeInfo[selectedBloodType].rarity}</p>
                     <p className="text-sm text-rose-700">
-                      Compatible avec : <strong>{bloodTypeInfo[selectedBloodType].compatible.join(', ')}</strong>
+                      {t('donor_registration.step2.compatibility')} <strong>{bloodTypeInfo[selectedBloodType].compatible.join(', ')}</strong>
                     </p>
                   </motion.div>
                 )}
@@ -369,7 +371,7 @@ export default function DonorRegistration() {
                   className="mt-4 w-full flex items-center justify-center gap-2 py-3 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200 transition-colors text-sm"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  Je ne connais pas mon groupe sanguin — Obtenir de l'aide
+                  {t('donor_registration.step2.dont_know_blood_type')}
                 </button>
               </div>
             )}
@@ -377,9 +379,9 @@ export default function DonorRegistration() {
             {/* Step 3: Location */}
             {currentStep === 3 && (
               <div>
-                <h2 className="text-xl font-bold text-slate-900 mb-1">Votre localisation</h2>
+                <h2 className="text-xl font-bold text-slate-900 mb-1">{t('donor_registration.step3.title')}</h2>
                 <p className="text-slate-500 text-sm mb-6">
-                  Pour que l'IA puisse vous matcher avec les hôpitaux proches de chez vous
+                  {t('donor_registration.step3.subtitle')}
                 </p>
 
                 <button
@@ -388,9 +390,9 @@ export default function DonorRegistration() {
                   className="w-full flex items-center justify-center gap-3 py-5 bg-rose-600 hover:bg-rose-700 disabled:opacity-60 text-white font-bold rounded-2xl transition-all text-lg shadow-lg shadow-rose-200 hover:shadow-rose-300 hover:-translate-y-0.5"
                 >
                   {locating ? (
-                    <><Loader2 className="w-5 h-5 animate-spin" /> Localisation en cours...</>
+                    <><Loader2 className="w-5 h-5 animate-spin" /> {t('donor_registration.step3.locating')}</>
                   ) : (
-                    <><Navigation className="w-5 h-5" /> Me localiser maintenant</>
+                    <><Navigation className="w-5 h-5" /> {t('donor_registration.step3.locate_me')}</>
                   )}
                 </button>
 
@@ -404,7 +406,7 @@ export default function DonorRegistration() {
                       <MapPin className="w-5 h-5 text-emerald-600" />
                     </div>
                     <div>
-                      <p className="font-semibold text-emerald-800 text-sm">Position enregistrée ✓</p>
+                      <p className="font-semibold text-emerald-800 text-sm">{t('donor_registration.location_saved')}</p>
                       <p className="text-emerald-600 text-xs mt-0.5">
                         {location.lat.toFixed(4)}, {location.lng.toFixed(4)}
                       </p>
@@ -414,25 +416,24 @@ export default function DonorRegistration() {
 
                 <div className="mt-4 p-4 bg-slate-50 border border-slate-100 rounded-xl">
                   <p className="text-xs text-slate-500 leading-relaxed">
-                    🔒 Votre position n'est partagée avec les hôpitaux qu'en cas d'alerte active.
-                    Elle est chiffrée et supprimée après chaque session.
+                    {t('donor_registration.step3.privacy_note')}
                   </p>
                 </div>
 
                 <div className="mt-4 flex items-center gap-2">
                   <div className="flex-1 h-px bg-slate-200" />
-                  <span className="text-xs text-slate-400">ou</span>
+                  <span className="text-xs text-slate-400">{t('donor_registration.step3.or')}</span>
                   <div className="flex-1 h-px bg-slate-200" />
                 </div>
 
                 <button
                   onClick={() => {
                     setLocation({ lat: 33.5731, lng: -7.5898, address: 'Casablanca (saisie manuelle)' })
-                    toast.info('Position définie sur Casablanca')
+                    toast.info(t('donor_registration.step3.manual_location_set'))
                   }}
                   className="mt-4 w-full py-3 text-slate-600 bg-slate-100 rounded-xl font-medium hover:bg-slate-200 transition-colors text-sm"
                 >
-                  Définir ma position manuellement
+                  {t('donor_registration.step3.manual_location')}
                 </button>
               </div>
             )}
@@ -445,7 +446,7 @@ export default function DonorRegistration() {
             onClick={() => currentStep > 1 ? setCurrentStep((s) => s - 1) : navigate('/')}
             className="px-5 py-2.5 text-slate-600 font-medium rounded-xl hover:bg-slate-100 transition-colors"
           >
-            ← Retour
+            ← {t('donor_registration.back')}
           </button>
 
           {currentStep < 3 ? (
@@ -454,7 +455,7 @@ export default function DonorRegistration() {
               disabled={!canProceed()}
               className="flex items-center gap-2 px-6 py-2.5 bg-rose-600 text-white font-semibold rounded-xl hover:bg-rose-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
             >
-              Continuer <ChevronRight className="w-4 h-4" />
+              {t('donor_registration.continue')} <ChevronRight className="w-4 h-4" />
             </button>
           ) : (
             <button
@@ -463,9 +464,9 @@ export default function DonorRegistration() {
               className="flex items-center gap-2 px-6 py-2.5 bg-rose-600 text-white font-semibold rounded-xl hover:bg-rose-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
             >
               {submitting ? (
-                <><Loader2 className="w-4 h-4 animate-spin" /> Inscription...</>
+                <><Loader2 className="w-4 h-4 animate-spin" /> {t('donor_registration.submitting')}</>
               ) : (
-                <><Heart className="w-4 h-4" /> Finaliser l'inscription</>
+                <><Heart className="w-4 h-4" /> {t('donor_registration.finalize')}</>
               )}
             </button>
           )}
@@ -495,8 +496,8 @@ export default function DonorRegistration() {
                     <MessageCircle className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <p className="font-bold text-white text-sm">Assistant IA — Urgence-Sang</p>
-                    <p className="text-rose-200 text-xs">Conseiller en santé</p>
+                    <p className="font-bold text-white text-sm">{t('donor_registration.chat.title')}</p>
+                    <p className="text-rose-200 text-xs">{t('donor_registration.chat.subtitle')}</p>
                   </div>
                 </div>
                 <button
@@ -541,7 +542,7 @@ export default function DonorRegistration() {
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && sendChatMessage()}
-                    placeholder="Écrivez votre réponse..."
+                    placeholder={t('donor_registration.chat.placeholder')}
                     className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500"
                   />
                   <button
