@@ -37,7 +37,7 @@ func main() {
 		Format: "[${time}] ${status} ${method} ${path} ${latency}\n",
 	}))
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:5173,http://localhost:5174,https://urgence-sang.netlify.app",
+		AllowOrigins: "*",
 		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
 		AllowMethods: "GET, POST, PUT, PATCH, DELETE, OPTIONS",
 	}))
