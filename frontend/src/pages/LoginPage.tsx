@@ -50,9 +50,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 relative">
-      <div className="absolute top-4 right-4">
-        <LanguageSwitcher className="text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-100 rounded-lg shadow-sm border border-slate-200" />
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 pt-16 sm:pt-4 relative">
+      <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
+        <LanguageSwitcher className="text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-100 rounded-lg shadow-sm border border-slate-200 text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2" />
       </div>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -60,20 +60,20 @@ export default function LoginPage() {
         className="w-full max-w-md"
       >
         {/* Logo */}
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2.5 mb-6">
-            <div className="w-8 h-8 bg-rose-600 flex items-center justify-center rounded-lg">
-              <Droplets className="w-4 h-4 text-white" />
+        <div className="text-center mb-6 sm:mb-8">
+          <Link to="/" className="inline-flex items-center gap-2.5 mb-4 sm:mb-6">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-rose-600 flex items-center justify-center rounded-lg">
+              <Droplets className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
             </div>
-            <span className="text-sm font-bold tracking-widest uppercase text-slate-900">
+            <span className="text-xs sm:text-sm font-bold tracking-widest uppercase text-slate-900">
               Urgence<span className="text-rose-600">-Sang</span>
             </span>
           </Link>
-          <h1 className="text-2xl font-black text-slate-900">{t('login.title')}</h1>
-          <p className="text-slate-500 mt-1 text-sm">{t('login.subtitle')}</p>
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900">{t('login.title')}</h1>
+          <p className="text-slate-500 mt-1 text-xs sm:text-sm">{t('login.subtitle')}</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-8">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('login.email')} *</label>

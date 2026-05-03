@@ -373,38 +373,36 @@ export default function DonorDashboard() {
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="bg-white border-b border-gray-200 px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+        <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-4">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-3 min-w-0">
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="lg:hidden p-2 hover:bg-gray-100 active:bg-gray-200 rounded-lg transition-all duration-200"
+                className="lg:hidden p-2 hover:bg-gray-100 active:bg-gray-200 rounded-lg transition-all duration-200 shrink-0"
               >
                 <Menu className="w-5 h-5 text-gray-600" />
               </button>
-              <div className="flex items-center gap-3">
-                <div>
-                  <h2 className="text-lg font-bold text-gray-900">{t('donor_dashboard.welcome')} {currentUser?.first_name || 'Donneur'}</h2>
-                  <p className="text-sm text-gray-500">{t('donor_dashboard.blood_type')} <span className="font-semibold text-red-600">{currentUser?.blood_type || '-'}</span></p>
-                </div>
-                <span className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-md border border-emerald-200">
-                  <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-                  {t('donor_dashboard.active')}
-                </span>
+              <div className="min-w-0">
+                <h2 className="text-base sm:text-lg font-bold text-gray-900 truncate">{t('donor_dashboard.welcome')} {currentUser?.first_name || 'Donneur'}</h2>
+                <p className="text-xs sm:text-sm text-gray-500">{t('donor_dashboard.blood_type')} <span className="font-semibold text-red-600">{currentUser?.blood_type || '-'}</span></p>
               </div>
+              <span className="hidden sm:inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-md border border-emerald-200 shrink-0">
+                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
+                {t('donor_dashboard.active')}
+              </span>
             </div>
-            <div className="flex items-center gap-3">
-              <LanguageSwitcher className="text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-lg" />
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+              <LanguageSwitcher className="text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-lg shrink-0" />
               <button 
                 onClick={() => toast.info(t('donor_dashboard.no_notifications'))}
-                className="relative p-2.5 hover:bg-gray-100 active:bg-gray-200 rounded-lg transition-all duration-200 hover:scale-105"
+                className="relative p-2 sm:p-2.5 hover:bg-gray-100 active:bg-gray-200 rounded-lg transition-all duration-200 hover:scale-105 shrink-0"
               >
                 <Bell className="w-5 h-5 text-gray-600 hover:text-gray-900 transition-colors" />
                 <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white animate-pulse" />
               </button>
               <button
                 onClick={() => navigate('/donor/nearby-alerts')}
-                className="flex items-center gap-2 px-4 py-2.5 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white text-sm font-semibold rounded-lg transition-all duration-200 shadow-sm hover:shadow-md hover:scale-105"
+                className="flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white text-sm font-semibold rounded-lg transition-all duration-200 shadow-sm hover:shadow-md hover:scale-105 shrink-0"
               >
                 <Target className="w-4 h-4" />
                 <span className="hidden sm:inline">{t('donor_dashboard.available_alerts')}</span>
