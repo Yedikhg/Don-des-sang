@@ -463,7 +463,7 @@ export default function HospitalDashboard() {
               }`}
             >
               <MapPin className="w-5 h-5" />
-              Don en cours
+              {t('hospital_dashboard.in_progress')}
             </button>
             <button 
               onClick={() => setCurrentView('history')}
@@ -636,10 +636,10 @@ export default function HospitalDashboard() {
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2">
                           <AlertTriangle className="w-5 h-5 text-red-600" />
-                          <h3 className="font-bold text-red-900">Alerte active</h3>
+                          <h3 className="font-bold text-red-900">{t('hospital_dashboard.active_alert')}</h3>
                         </div>
                         <span className="text-sm text-red-600 font-medium">
-                          {responses.length} réponse(s)
+                          {responses.length} {t('hospital_dashboard.responses')}
                         </span>
                       </div>
 
@@ -649,7 +649,7 @@ export default function HospitalDashboard() {
                           <span className="font-bold text-red-700">{activeAlert.blood_type}</span>
                         </div>
                         <div className="text-gray-700 text-sm">
-                          <span className="font-semibold">{activeAlert.quantity_units}</span> poche(s) requise(s)
+                          <span className="font-semibold">{activeAlert.quantity_units}</span> {t('hospital_dashboard.pouches_required')}
                         </div>
                       </div>
 
@@ -658,7 +658,7 @@ export default function HospitalDashboard() {
                         className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition-colors"
                       >
                         <QrCode className="w-4 h-4" />
-                        Scanner l'arrivée
+                        {t('hospital_dashboard.scan_arrival')}
                       </button>
                     </div>
                   )}
@@ -666,7 +666,7 @@ export default function HospitalDashboard() {
                   {/* Donors en route */}
                   <div className="bg-white rounded-lg border border-gray-200">
                     <div className="flex items-center justify-between p-5 border-b border-gray-200">
-                      <h3 className="font-bold text-gray-900">Donneurs en route</h3>
+                      <h3 className="font-bold text-gray-900">{t('hospital_dashboard.donors_en_route')}</h3>
                       <span className="text-sm text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full font-medium">
                         {responses.length}
                       </span>
@@ -674,7 +674,7 @@ export default function HospitalDashboard() {
                     <div className="divide-y divide-gray-100">
                       {responses.length === 0 ? (
                         <div className="px-5 py-8 text-center text-sm text-gray-500">
-                          Aucun donneur en route pour le moment.
+                          {t('hospital_dashboard.no_donor_en_route')}
                         </div>
                       ) : (
                         responses.map((donor) => (
@@ -703,8 +703,8 @@ export default function HospitalDashboard() {
 
                   {/* Chart */}
                   <div className="bg-white rounded-lg border border-gray-200 p-5">
-                    <h3 className="font-bold text-gray-900 mb-1">Activité hebdomadaire</h3>
-                    <p className="text-sm text-gray-500 mb-4">Réponses et dons effectifs</p>
+                    <h3 className="font-bold text-gray-900 mb-1">{t('hospital_dashboard.weekly_activity')}</h3>
+                    <p className="text-sm text-gray-500 mb-4">{t('hospital_dashboard.responses_and_donations')}</p>
                     <ResponsiveContainer width="100%" height={200}>
                       <BarChart data={(stats?.series ?? [])} barSize={12} barGap={4}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -725,11 +725,11 @@ export default function HospitalDashboard() {
                   {/* Recent alerts */}
                   <div className="bg-white rounded-lg border border-gray-200">
                     <div className="p-4 border-b border-gray-200">
-                      <h3 className="font-bold text-gray-900">Alertes récentes</h3>
+                      <h3 className="font-bold text-gray-900">{t('hospital_dashboard.recent_alerts')}</h3>
                     </div>
                     {alerts.length === 0 ? (
                       <div className="px-4 py-8 text-center text-sm text-gray-500">
-                        Aucune alerte pour le moment.
+                        {t('hospital_dashboard.no_alerts_yet')}
                       </div>
                     ) : (
                       <div className="divide-y divide-gray-100">
@@ -740,7 +740,7 @@ export default function HospitalDashboard() {
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-medium text-gray-700 truncate">{alert.id.slice(0, 8)}...</p>
-                              <p className="text-xs text-gray-500">{alert.quantity_units} poche(s)</p>
+                              <p className="text-xs text-gray-500">{alert.quantity_units} {t('hospital_dashboard.pouches')}</p>
                             </div>
                             {alert.status === 'completed' ? (
                               <CheckCircle className="w-4 h-4 text-emerald-500" />
@@ -902,8 +902,8 @@ export default function HospitalDashboard() {
           {currentView === 'history' && (
             <div className="space-y-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Historique des alertes</h2>
-                <p className="text-sm text-gray-500 mt-1">Toutes vos alertes passées et leur statut</p>
+                <h2 className="text-2xl font-bold text-gray-900">{t('hospital_dashboard.alerts_history')}</h2>
+                <p className="text-sm text-gray-500 mt-1">{t('hospital_dashboard.alerts_history_desc')}</p>
               </div>
 
               <div className="bg-white rounded-lg border border-gray-200">
@@ -911,19 +911,19 @@ export default function HospitalDashboard() {
                   <table className="w-full">
                     <thead className="bg-gray-50 border-b border-gray-200">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Date</th>
-                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Groupe</th>
-                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Quantité</th>
-                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Réponses</th>
-                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Statut</th>
-                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">ID</th>
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">{t('hospital_dashboard.table_date')}</th>
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">{t('hospital_dashboard.table_group')}</th>
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">{t('hospital_dashboard.table_quantity')}</th>
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">{t('hospital_dashboard.table_responses')}</th>
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">{t('hospital_dashboard.table_status')}</th>
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">{t('hospital_dashboard.table_id')}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
                       {alerts.length === 0 ? (
                         <tr>
                           <td colSpan={6} className="px-6 py-12 text-center text-sm text-gray-500">
-                            Aucune alerte dans l'historique
+                            {t('hospital_dashboard.no_history')}
                           </td>
                         </tr>
                       ) : (
@@ -943,18 +943,18 @@ export default function HospitalDashboard() {
                                 {alert.blood_type}
                               </span>
                             </td>
-                            <td className="px-6 py-4 text-sm text-gray-900">{alert.quantity_units} poche(s)</td>
+                            <td className="px-6 py-4 text-sm text-gray-900">{alert.quantity_units} {t('hospital_dashboard.pouches')}</td>
                             <td className="px-6 py-4 text-sm text-gray-900">-</td>
                             <td className="px-6 py-4">
                               {alert.status === 'completed' ? (
                                 <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded">
                                   <CheckCircle className="w-3 h-3" />
-                                  Complété
+                                  {t('hospital_dashboard.completed')}
                                 </span>
                               ) : (
                                 <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-50 text-amber-700 text-xs font-semibold rounded">
                                   <Clock className="w-3 h-3" />
-                                  Actif
+                                  {t('hospital_dashboard.active')}
                                 </span>
                               )}
                             </td>

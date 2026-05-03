@@ -477,19 +477,19 @@ export default function DonorDashboard() {
                         <CalendarClock className="w-5 h-5 text-blue-600" />
                       </div>
                       <div>
-                        <h3 className="font-bold text-gray-900">Prochaine donation</h3>
+                        <h3 className="font-bold text-gray-900">{t('donor_dashboard.next_donation')}</h3>
                         <p className="text-sm text-gray-500">
-                          {daysUntilNext === null ? 'Aucune donnée' : daysUntilNext === 0 ? 'Disponible maintenant' : `Dans ${daysUntilNext} jours`}
+                          {daysUntilNext === null ? t('donor_dashboard.no_data') : daysUntilNext === 0 ? t('donor_dashboard.available_now') : t('donor_dashboard.in_days', { days: daysUntilNext })}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                       <div>
-                        <p className="text-xs text-gray-500">Dernier don</p>
+                        <p className="text-xs text-gray-500">{t('donor_dashboard.last_donation')}</p>
                         <p className="text-sm font-semibold text-gray-900">{derniereDonationText}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-500">Prochain don possible</p>
+                        <p className="text-xs text-gray-500">{t('donor_dashboard.next_possible_donation')}</p>
                         <p className="text-sm font-semibold text-gray-900">{prochainDonText}</p>
                       </div>
                     </div>
@@ -497,8 +497,8 @@ export default function DonorDashboard() {
 
                   {/* Chart */}
                   <div className="bg-white rounded-lg border border-gray-200 p-5">
-                    <h3 className="font-bold text-gray-900 mb-1">Activité hebdomadaire</h3>
-                    <p className="text-sm text-gray-500 mb-4">Alertes reçues et réponses</p>
+                    <h3 className="font-bold text-gray-900 mb-1">{t('donor_dashboard.weekly_activity')}</h3>
+                    <p className="text-sm text-gray-500 mb-4">{t('donor_dashboard.alerts_and_responses')}</p>
                     <ResponsiveContainer width="100%" height={200}>
                       <BarChart data={weeklyChartData} barSize={12} barGap={4}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -518,22 +518,22 @@ export default function DonorDashboard() {
                 <div className="space-y-6">
                   {/* Stats summary */}
                   <div className="bg-white rounded-lg border border-gray-200 p-5">
-                    <h3 className="font-bold text-gray-900 mb-4">Résumé</h3>
+                    <h3 className="font-bold text-gray-900 mb-4">{t('donor_dashboard.summary')}</h3>
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">Alertes reçues</span>
+                        <span className="text-sm text-gray-600">{t('donor_dashboard.alerts_received')}</span>
                         <span className="text-sm font-semibold text-gray-900">{stats?.alerts_received ?? 0}</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">Acceptées</span>
+                        <span className="text-sm text-gray-600">{t('donor_dashboard.accepted')}</span>
                         <span className="text-sm font-semibold text-emerald-600">{stats?.responses_accepted ?? 0}</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">Refusées</span>
+                        <span className="text-sm text-gray-600">{t('donor_dashboard.declined')}</span>
                         <span className="text-sm font-semibold text-gray-600">{stats?.responses_declined ?? 0}</span>
                       </div>
                       <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                        <span className="text-sm text-gray-600">Dons complétés</span>
+                        <span className="text-sm text-gray-600">{t('donor_dashboard.completed_donations')}</span>
                         <span className="text-sm font-semibold text-red-600">{stats?.completed_donations ?? 0}</span>
                       </div>
                     </div>
@@ -546,8 +546,8 @@ export default function DonorDashboard() {
                         <Award className="w-5 h-5 text-amber-600" />
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500">Classement</p>
-                        <h3 className="text-lg font-bold text-gray-900">{stats?.rank_label || 'Non classé'}</h3>
+                        <p className="text-sm text-gray-500">{t('donor_dashboard.ranking')}</p>
+                        <h3 className="text-lg font-bold text-gray-900">{stats?.rank_label || t('donor_dashboard.unranked')}</h3>
                       </div>
                     </div>
                   </div>
@@ -559,8 +559,8 @@ export default function DonorDashboard() {
           {currentView === 'history' && (
             <div className="space-y-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Historique des réponses</h2>
-                <p className="text-sm text-gray-500 mt-1">Toutes vos réponses aux alertes</p>
+                <h2 className="text-2xl font-bold text-gray-900">{t('donor_dashboard.responses_history')}</h2>
+                <p className="text-sm text-gray-500 mt-1">{t('donor_dashboard.responses_history_desc')}</p>
               </div>
 
               <div className="bg-white rounded-lg border border-gray-200">
@@ -568,18 +568,18 @@ export default function DonorDashboard() {
                   <table className="w-full">
                     <thead className="bg-gray-50 border-b border-gray-200">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Date</th>
-                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Hôpital</th>
-                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Groupe</th>
-                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Distance</th>
-                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Statut</th>
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">{t('donor_dashboard.table_date')}</th>
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">{t('donor_dashboard.table_hospital')}</th>
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">{t('donor_dashboard.table_group')}</th>
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">{t('donor_dashboard.table_distance')}</th>
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">{t('donor_dashboard.table_status')}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
                       {history.length === 0 ? (
                         <tr>
                           <td colSpan={5} className="px-6 py-12 text-center text-sm text-gray-500">
-                            Aucun historique disponible
+                            {t('donor_dashboard.no_history')}
                           </td>
                         </tr>
                       ) : (
@@ -601,16 +601,16 @@ export default function DonorDashboard() {
                               {(item.response_status || item.status) === 'completed' ? (
                                 <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded">
                                   <CheckCircle className="w-3 h-3" />
-                                  Complété
+                                  {t('donor_dashboard.completed')}
                                 </span>
                               ) : (item.response_status || item.status) === 'en_route' ? (
                                 <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded">
                                   <Clock className="w-3 h-3" />
-                                  Acceptée
+                                  {t('donor_dashboard.accepted')}
                                 </span>
                               ) : (
                                 <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-gray-50 text-gray-700 text-xs font-semibold rounded">
-                                  Refusée
+                                  {t('donor_dashboard.declined')}
                                 </span>
                               )}
                             </td>
