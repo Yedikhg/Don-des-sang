@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/api/v1/(.*)",
+      "dest": "/api/index.go"
+    },
+    {
+      "src": "/health",
+      "dest": "/api/index.go"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.go"
+    }
+  ],
+  "functions": {
+    "api/index.go": {
+      "maxDuration": 30
+    }
+  },
+  "env": {
+    "DATABASE_URL": "@database_url",
+    "JWT_SECRET": "@jwt_secret",
+    "SUPABASE_URL": "@supabase_url",
+    "SUPABASE_SERVICE_KEY": "@supabase_key"
+  }
+}
