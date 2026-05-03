@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: urgence-sang-api
+    runtime: go
+    repo: https://github.com/Yedikhg/Don-des-sang
+    branch: main
+    rootDir: backend
+    buildCommand: go build -o bin/api ./cmd/main.go
+    startCommand: ./bin/api
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: PORT
+        value: 10000
+      - key: JWT_EXPIRATION_HOURS
+        value: 24
+      - key: MAX_UPLOAD_SIZE_MB
+        value: 10
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      - key: AI_SERVICE_URL
+        value: https://yedidya1234-urgence-sang-ai.hf.space
+    healthCheckPath: /health
