@@ -1122,35 +1122,35 @@ export default function HospitalDashboard() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto"
             onClick={(e) => e.target === e.currentTarget && setShowAlertModal(false)}
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden"
+              className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto my-4"
             >
-              <div className="flex items-center justify-between p-5 border-b border-slate-100 bg-rose-600 text-white">
+              <div className="flex items-center justify-between p-3 sm:p-5 border-b border-slate-100 bg-rose-600 text-white sticky top-0 z-10">
                 <div className="flex items-center gap-2">
-                  <Zap className="w-5 h-5" />
-                  <h3 className="font-black text-lg">Nouvelle alerte urgente</h3>
+                  <Zap className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <h3 className="font-black text-sm sm:text-lg">Nouvelle alerte urgente</h3>
                 </div>
                 <button onClick={() => setShowAlertModal(false)} className="p-1.5 hover:bg-white/20 rounded-lg transition-colors">
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
               </div>
 
-              <div className="p-5 space-y-4">
+              <div className="p-3 sm:p-5 space-y-3 sm:space-y-4">
                 {/* Blood type */}
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">Groupe sanguin requis *</label>
-                  <div className="grid grid-cols-4 gap-2">
+                  <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1.5 sm:mb-2">Groupe sanguin requis *</label>
+                  <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
                     {bloodTypes.map((type) => (
                       <button
                         key={type}
                         onClick={() => setAlertForm({ ...alertForm, bloodType: type })}
-                        className={`py-2.5 rounded-xl font-bold text-sm transition-all ${
+                        className={`py-2 sm:py-2.5 rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm transition-all ${
                           alertForm.bloodType === type
                             ? 'bg-rose-600 text-white shadow-md'
                             : 'bg-slate-50 text-slate-600 border border-slate-200 hover:border-rose-300'
@@ -1164,64 +1164,64 @@ export default function HospitalDashboard() {
 
                 {/* Quantity */}
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Nombre de poches</label>
+                  <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1 sm:mb-1.5">Nombre de poches</label>
                   <input
                     type="number"
                     min="1"
                     max="10"
                     value={alertForm.quantity}
                     onChange={(e) => setAlertForm({ ...alertForm, quantity: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent text-sm sm:text-base"
                   />
                 </div>
 
                 {/* Duration */}
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Expiration de l'alerte</label>
+                  <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1 sm:mb-1.5">Expiration de l'alerte</label>
                   <select
                     value={alertForm.expiresIn}
                     onChange={(e) => setAlertForm({ ...alertForm, expiresIn: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-rose-500 bg-white"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-rose-500 bg-white text-sm sm:text-base"
                   >
-                    <option value="1">Expire dans 1 heure</option>
-                    <option value="2">Expire dans 2 heures</option>
-                    <option value="4">Expire dans 4 heures</option>
-                    <option value="8">Expire dans 8 heures</option>
-                    <option value="24">Expire dans 24 heures</option>
+                    <option value="1">1 heure</option>
+                    <option value="2">2 heures</option>
+                    <option value="4">4 heures</option>
+                    <option value="8">8 heures</option>
+                    <option value="24">24 heures</option>
                   </select>
                 </div>
 
                 {/* Message */}
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Message d'urgence</label>
+                  <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1 sm:mb-1.5">Message d'urgence</label>
                   <textarea
                     rows={2}
                     value={alertForm.message}
                     onChange={(e) => setAlertForm({ ...alertForm, message: e.target.value })}
-                    placeholder="ex: Patient en chirurgie, urgence vitale..."
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 resize-none"
+                    placeholder="ex: Patient en chirurgie..."
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 resize-none text-sm sm:text-base"
                   />
                 </div>
 
                 {/* Video upload */}
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-1.5 flex items-center gap-1.5">
-                    <Video className="w-4 h-4" />
-                    Vidéo de motivation (15-30s)
+                  <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1 sm:mb-1.5 flex items-center gap-1.5">
+                    <Video className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    Vidéo (15-30s)
                   </label>
-                  <label className="flex flex-col items-center justify-center gap-2 py-4 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-rose-300 hover:bg-rose-50 transition-all">
+                  <label className="flex flex-col items-center justify-center gap-1.5 sm:gap-2 py-3 sm:py-4 border-2 border-dashed border-slate-200 rounded-lg sm:rounded-xl cursor-pointer hover:border-rose-300 hover:bg-rose-50 transition-all">
                     {videoFile ? (
-                      <div className="text-center px-4 w-full">
-                        <p className="text-sm font-medium text-slate-700 truncate">{videoFile.name}</p>
+                      <div className="text-center px-3 sm:px-4 w-full">
+                        <p className="text-xs sm:text-sm font-medium text-slate-700 truncate">{videoFile.name}</p>
                         <p className="text-xs text-emerald-600 mt-1 flex items-center justify-center gap-1">
                           <CheckCircle className="w-3 h-3" /> Vidéo prête
                         </p>
                       </div>
                     ) : (
                       <>
-                        <Upload className="w-6 h-6 text-slate-300" />
-                        <span className="text-sm text-slate-400">Cliquez pour uploader une vidéo</span>
-                        <span className="text-xs text-slate-300">MP4, MOV · Max 50 Mo</span>
+                        <Upload className="w-5 h-5 sm:w-6 sm:h-6 text-slate-300" />
+                        <span className="text-xs sm:text-sm text-slate-400">Uploader une vidéo</span>
+                        <span className="text-[10px] sm:text-xs text-slate-300">MP4, MOV · Max 50Mo</span>
                       </>
                     )}
                     <input
@@ -1237,12 +1237,12 @@ export default function HospitalDashboard() {
                 <button
                   onClick={handleLaunchAlert}
                   disabled={launching}
-                  className="w-full py-4 bg-rose-600 hover:bg-rose-700 disabled:opacity-60 text-white font-black text-lg rounded-2xl transition-colors flex items-center justify-center gap-2"
+                  className="w-full py-3 sm:py-4 bg-rose-600 hover:bg-rose-700 disabled:opacity-60 text-white font-bold sm:font-black text-sm sm:text-lg rounded-xl sm:rounded-2xl transition-colors flex items-center justify-center gap-2 min-h-[48px] sm:min-h-[56px]"
                 >
                   {launching ? (
-                    <><Loader2 className="w-5 h-5 animate-spin" /> Envoi en cours...</>
+                    <><Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin flex-shrink-0" /><span className="text-xs sm:text-base">Envoi...</span></>
                   ) : (
-                    <><Zap className="w-5 h-5" /> Lancer l'alerte maintenant</>
+                    <><Zap className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" /><span className="text-xs sm:text-base">Lancer l'alerte</span></>
                   )}
                 </button>
               </div>
