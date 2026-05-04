@@ -1019,7 +1019,7 @@ export default function HospitalDashboard() {
 
               {/* Blood type distribution */}
               <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <h3 className="font-bold text-gray-900 mb-4 text-lg">Répartition par groupe sanguin</h3>
+                <h3 className="font-bold text-gray-900 mb-4 text-lg">{t('hospital_dashboard.blood_distribution')}</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {bloodTypes.map((type) => {
                     const count = alerts.filter(a => a.blood_type === type).length
@@ -1134,7 +1134,7 @@ export default function HospitalDashboard() {
               <div className="flex items-center justify-between p-3 sm:p-5 border-b border-slate-100 bg-rose-600 text-white sticky top-0 z-10">
                 <div className="flex items-center gap-2">
                   <Zap className="w-4 h-4 sm:w-5 sm:h-5" />
-                  <h3 className="font-black text-sm sm:text-lg">Nouvelle alerte urgente</h3>
+                  <h3 className="font-black text-sm sm:text-lg">{t('hospital_dashboard.alert_modal.title')}</h3>
                 </div>
                 <button onClick={() => setShowAlertModal(false)} className="p-1.5 hover:bg-white/20 rounded-lg transition-colors">
                   <X className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -1144,7 +1144,7 @@ export default function HospitalDashboard() {
               <div className="p-3 sm:p-5 space-y-3 sm:space-y-4">
                 {/* Blood type */}
                 <div>
-                  <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1.5 sm:mb-2">Groupe sanguin requis *</label>
+                  <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1.5 sm:mb-2">{t('hospital_dashboard.alert_modal.blood_type_label')}</label>
                   <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
                     {bloodTypes.map((type) => (
                       <button
@@ -1164,7 +1164,7 @@ export default function HospitalDashboard() {
 
                 {/* Quantity */}
                 <div>
-                  <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1 sm:mb-1.5">Nombre de poches</label>
+                  <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1 sm:mb-1.5">{t('hospital_dashboard.alert_modal.quantity_label')}</label>
                   <input
                     type="number"
                     min="1"
@@ -1177,28 +1177,28 @@ export default function HospitalDashboard() {
 
                 {/* Duration */}
                 <div>
-                  <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1 sm:mb-1.5">Expiration de l'alerte</label>
+                  <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1 sm:mb-1.5">{t('hospital_dashboard.alert_modal.duration_label')}</label>
                   <select
                     value={alertForm.expiresIn}
                     onChange={(e) => setAlertForm({ ...alertForm, expiresIn: e.target.value })}
                     className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-rose-500 bg-white text-sm sm:text-base"
                   >
-                    <option value="1">1 heure</option>
-                    <option value="2">2 heures</option>
-                    <option value="4">4 heures</option>
-                    <option value="8">8 heures</option>
-                    <option value="24">24 heures</option>
+                    <option value="1">1 {t('hospital_dashboard.alert_modal.hour')}</option>
+                    <option value="2">2 {t('hospital_dashboard.alert_modal.hours')}</option>
+                    <option value="4">4 {t('hospital_dashboard.alert_modal.hours')}</option>
+                    <option value="8">8 {t('hospital_dashboard.alert_modal.hours')}</option>
+                    <option value="24">24 {t('hospital_dashboard.alert_modal.hours')}</option>
                   </select>
                 </div>
 
                 {/* Message */}
                 <div>
-                  <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1 sm:mb-1.5">Message d'urgence</label>
+                  <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1 sm:mb-1.5">{t('hospital_dashboard.alert_modal.message_label')}</label>
                   <textarea
                     rows={2}
                     value={alertForm.message}
                     onChange={(e) => setAlertForm({ ...alertForm, message: e.target.value })}
-                    placeholder="ex: Patient en chirurgie..."
+                    placeholder={t('hospital_dashboard.alert_modal.message_placeholder')}
                     className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 resize-none text-sm sm:text-base"
                   />
                 </div>
@@ -1207,21 +1207,21 @@ export default function HospitalDashboard() {
                 <div>
                   <label className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1 sm:mb-1.5 flex items-center gap-1.5">
                     <Video className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                    Vidéo (15-30s)
+                    {t('hospital_dashboard.alert_modal.video_label')}
                   </label>
                   <label className="flex flex-col items-center justify-center gap-1.5 sm:gap-2 py-3 sm:py-4 border-2 border-dashed border-slate-200 rounded-lg sm:rounded-xl cursor-pointer hover:border-rose-300 hover:bg-rose-50 transition-all">
                     {videoFile ? (
                       <div className="text-center px-3 sm:px-4 w-full">
                         <p className="text-xs sm:text-sm font-medium text-slate-700 truncate">{videoFile.name}</p>
                         <p className="text-xs text-emerald-600 mt-1 flex items-center justify-center gap-1">
-                          <CheckCircle className="w-3 h-3" /> Vidéo prête
+                          <CheckCircle className="w-3 h-3" /> {t('hospital_dashboard.alert_modal.video_ready')}
                         </p>
                       </div>
                     ) : (
                       <>
                         <Upload className="w-5 h-5 sm:w-6 sm:h-6 text-slate-300" />
-                        <span className="text-xs sm:text-sm text-slate-400">Uploader une vidéo</span>
-                        <span className="text-[10px] sm:text-xs text-slate-300">MP4, MOV · Max 50Mo</span>
+                        <span className="text-xs sm:text-sm text-slate-400">{t('hospital_dashboard.alert_modal.video_upload')}</span>
+                        <span className="text-[10px] sm:text-xs text-slate-300">{t('hospital_dashboard.alert_modal.video_format')}</span>
                       </>
                     )}
                     <input
@@ -1240,9 +1240,9 @@ export default function HospitalDashboard() {
                   className="w-full py-3 sm:py-4 bg-rose-600 hover:bg-rose-700 disabled:opacity-60 text-white font-bold sm:font-black text-sm sm:text-lg rounded-xl sm:rounded-2xl transition-colors flex items-center justify-center gap-2 min-h-[48px] sm:min-h-[56px]"
                 >
                   {launching ? (
-                    <><Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin flex-shrink-0" /><span className="text-xs sm:text-base">Envoi...</span></>
+                    <><Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin flex-shrink-0" /><span className="text-xs sm:text-base">{t('hospital_dashboard.alert_modal.launching')}</span></>
                   ) : (
-                    <><Zap className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" /><span className="text-xs sm:text-base">Lancer l'alerte</span></>
+                    <><Zap className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" /><span className="text-xs sm:text-base">{t('hospital_dashboard.alert_modal.launch_button')}</span></>
                   )}
                 </button>
               </div>
