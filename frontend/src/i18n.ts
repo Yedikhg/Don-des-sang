@@ -304,7 +304,66 @@ const fr = {
         impact: 'Vies impactées',
         response_rate: 'Taux de réponse',
         impact_score: 'Score d\'impact'
-      }
+      },
+      // Toast notifications
+      urgent_alert_nearby: 'Alerte urgente près de vous ({{bloodType}})',
+      tap_to_open_details: 'Touchez pour ouvrir les détails.',
+      view: 'Voir',
+      // Donation info
+      previous_data: 'Données antérieures',
+      no_donation_recorded: 'Aucun don enregistré',
+      // Loading
+      loading_error: 'Erreur de chargement',
+      loading: 'Chargement',
+      // Days of week
+      sun: 'Dim',
+      mon: 'Lun',
+      tue: 'Mar',
+      wed: 'Mer',
+      thu: 'Jeu',
+      fri: 'Ven',
+      sat: 'Sam',
+      // Months
+      jan: 'Jan',
+      feb: 'Fév',
+      mar: 'Mar',
+      apr: 'Avr',
+      may: 'Mai',
+      jun: 'Juin',
+      jul: 'Juil',
+      aug: 'Aoû',
+      sep: 'Sep',
+      oct: 'Oct',
+      nov: 'Nov',
+      dec: 'Déc',
+      // Chart labels
+      chart_alerts: 'Alertes',
+      chart_responses: 'Réponses',
+      // Statistics page
+      stats_title: 'Statistiques détaillées',
+      stats_desc: 'Analyse approfondie de votre activité',
+      total_donations: 'Total dons',
+      accepted_responses: 'Réponses acceptées',
+      declined_responses: 'Réponses refusées',
+      lives_impacted: 'Vies impactées',
+      monthly_evolution: 'Évolution mensuelle',
+      alerts_vs_responses: 'Alertes reçues vs réponses acceptées',
+      received_alerts: 'Alertes reçues',
+      accepted_responses_chart: 'Réponses acceptées',
+      // Settings page
+      settings_title: 'Paramètres',
+      settings_desc: 'Gérez vos informations personnelles',
+      personal_info: 'Informations personnelles',
+      full_name: 'Nom complet',
+      phone: 'Téléphone',
+      blood_type_label: 'Groupe sanguin',
+      // Notifications
+      notifications: 'Notifications',
+      emergency_alerts: 'Alertes d\'urgence',
+      emergency_alerts_desc: 'Recevoir les alertes critiques par notification',
+      email_notifications_desc: 'Recevoir un résumé par email',
+      donation_reminders: 'Rappels de don',
+      donation_reminders_desc: 'Être notifié quand vous êtes éligible'
     },
     hospital_dashboard: {
       space: 'Espace Hôpital',
@@ -833,7 +892,66 @@ const en = {
         impact: 'Lives impacted',
         response_rate: 'Response rate',
         impact_score: 'Impact score'
-      }
+      },
+      // Toast notifications
+      urgent_alert_nearby: 'Urgent alert nearby ({{bloodType}})',
+      tap_to_open_details: 'Tap to open details.',
+      view: 'View',
+      // Donation info
+      previous_data: 'Previous data',
+      no_donation_recorded: 'No donation recorded',
+      // Loading
+      loading_error: 'Loading error',
+      loading: 'Loading',
+      // Days of week
+      sun: 'Sun',
+      mon: 'Mon',
+      tue: 'Tue',
+      wed: 'Wed',
+      thu: 'Thu',
+      fri: 'Fri',
+      sat: 'Sat',
+      // Months
+      jan: 'Jan',
+      feb: 'Feb',
+      mar: 'Mar',
+      apr: 'Apr',
+      may: 'May',
+      jun: 'Jun',
+      jul: 'Jul',
+      aug: 'Aug',
+      sep: 'Sep',
+      oct: 'Oct',
+      nov: 'Nov',
+      dec: 'Dec',
+      // Chart labels
+      chart_alerts: 'Alerts',
+      chart_responses: 'Responses',
+      // Statistics page
+      stats_title: 'Detailed statistics',
+      stats_desc: 'In-depth analysis of your activity',
+      total_donations: 'Total donations',
+      accepted_responses: 'Accepted responses',
+      declined_responses: 'Declined responses',
+      lives_impacted: 'Lives impacted',
+      monthly_evolution: 'Monthly evolution',
+      alerts_vs_responses: 'Alerts received vs accepted responses',
+      received_alerts: 'Alerts received',
+      accepted_responses_chart: 'Accepted responses',
+      // Settings page
+      settings_title: 'Settings',
+      settings_desc: 'Manage your personal information',
+      personal_info: 'Personal information',
+      full_name: 'Full name',
+      phone: 'Phone',
+      blood_type_label: 'Blood type',
+      // Notifications
+      notifications: 'Notifications',
+      emergency_alerts: 'Emergency alerts',
+      emergency_alerts_desc: 'Receive critical alerts by notification',
+      email_notifications_desc: 'Receive a summary by email',
+      donation_reminders: 'Donation reminders',
+      donation_reminders_desc: 'Be notified when you are eligible'
     },
     hospital_dashboard: {
       space: 'Hospital Space',
@@ -1362,7 +1480,66 @@ const ar = {
         impact: 'الأرواح المتأثرة',
         response_rate: 'معدل الاستجابة',
         impact_score: 'نقاط التأثير'
-      }
+      },
+      // Toast notifications
+      urgent_alert_nearby: 'تنبيه عاجل بالقرب منك ({{bloodType}})',
+      tap_to_open_details: 'اضغط لفتح التفاصيل.',
+      view: 'عرض',
+      // Donation info
+      previous_data: 'بيانات سابقة',
+      no_donation_recorded: 'لم يتم تسجيل أي تبرع',
+      // Loading
+      loading_error: 'خطأ في التحميل',
+      loading: 'تحميل',
+      // Days of week
+      sun: 'أحد',
+      mon: 'اثنين',
+      tue: 'ثلاثاء',
+      wed: 'أربعاء',
+      thu: 'خميس',
+      fri: 'جمعة',
+      sat: 'سبت',
+      // Months
+      jan: 'يناير',
+      feb: 'فبراير',
+      mar: 'مارس',
+      apr: 'أبريل',
+      may: 'مايو',
+      jun: 'يونيو',
+      jul: 'يوليو',
+      aug: 'أغسطس',
+      sep: 'سبتمبر',
+      oct: 'أكتوبر',
+      nov: 'نوفمبر',
+      dec: 'ديسمبر',
+      // Chart labels
+      chart_alerts: 'تنبيهات',
+      chart_responses: 'استجابات',
+      // Statistics page
+      stats_title: 'إحصائيات مفصلة',
+      stats_desc: 'تحليل عميق لنشاطك',
+      total_donations: 'إجمالي التبرعات',
+      accepted_responses: 'استجابات مقبولة',
+      declined_responses: 'استجابات مرفوضة',
+      lives_impacted: 'أرواح متأثرة',
+      monthly_evolution: 'التطور الشهري',
+      alerts_vs_responses: 'التنبيهات المستلمة مقابل الاستجابات المقبولة',
+      received_alerts: 'التنبيهات المستلمة',
+      accepted_responses_chart: 'الاستجابات المقبولة',
+      // Settings page
+      settings_title: 'الإعدادات',
+      settings_desc: 'إدارة معلوماتك الشخصية',
+      personal_info: 'المعلومات الشخصية',
+      full_name: 'الاسم الكامل',
+      phone: 'الهاتف',
+      blood_type_label: 'فصيلة الدم',
+      // Notifications
+      notifications: 'الإشعارات',
+      emergency_alerts: 'تنبيهات الطوارئ',
+      emergency_alerts_desc: 'استلام التنبيهات الحرجة عبر الإشعارات',
+      email_notifications_desc: 'استلام ملخص عبر البريد الإلكتروني',
+      donation_reminders: 'تذكيرات التبرع',
+      donation_reminders_desc: 'يتم إخطارك عندما تكون مؤهلاً'
     },
     hospital_dashboard: {
       space: 'مساحة المستشفى',

@@ -87,11 +87,11 @@ export default function DonorDashboard() {
       if (lastSeen === alertId) return
       sessionStorage.setItem(key, alertId)
 
-      toast.error(`Alerte urgente près de vous (${top?.blood_type ?? ''})`, {
-        description: 'Touchez pour ouvrir les détails.',
+      toast.error(t('donor_dashboard.urgent_alert_nearby', { bloodType: top?.blood_type ?? '' }), {
+        description: t('donor_dashboard.tap_to_open_details'),
         duration: 8000,
         action: {
-          label: 'Voir',
+          label: t('donor_dashboard.view'),
           onClick: () => navigate(`/alert/${alertId}`),
         },
       })
@@ -107,7 +107,7 @@ export default function DonorDashboard() {
   const daysUntilNext = getDaysUntilEligible(stats?.next_eligible_at)
 
   const weeklyChartData = useMemo(() => {
-    const days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']
+    const days = [t('donor_dashboard.sun'), t('donor_dashboard.mon'), t('donor_dashboard.tue'), t('donor_dashboard.wed'), t('donor_dashboard.thu'), t('donor_dashboard.fri'), t('donor_dashboard.sat')]
     const data = Array.from({ length: 7 }, (_, i) => {
       const d = new Date()
       d.setDate(d.getDate() - (6 - i))
@@ -134,7 +134,7 @@ export default function DonorDashboard() {
   }, [history])
 
   const monthlyChartData = useMemo(() => {
-    const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc']
+    const months = [t('donor_dashboard.jan'), t('donor_dashboard.feb'), t('donor_dashboard.mar'), t('donor_dashboard.apr'), t('donor_dashboard.may'), t('donor_dashboard.jun'), t('donor_dashboard.jul'), t('donor_dashboard.aug'), t('donor_dashboard.sep'), t('donor_dashboard.oct'), t('donor_dashboard.nov'), t('donor_dashboard.dec')]
     const data = Array.from({ length: 4 }, (_, i) => {
       const d = new Date()
       d.setMonth(d.getMonth() - (3 - i))
@@ -168,13 +168,13 @@ export default function DonorDashboard() {
   const derniereDonationText = stats?.last_donation_at
     ? formatDateTime(stats.last_donation_at)
     : (stats?.donation_count && stats.donation_count > 0)
-    ? 'Données antérieures'
-    : 'Aucun don enregistré'
+    ? t('donor_dashboard.previous_data')
+    : t('donor_dashboard.no_donation_recorded')
 
   const prochainDonText = stats?.next_eligible_at
     ? formatDateTime(stats.next_eligible_at)
     : (stats?.donation_count && stats.donation_count > 0)
-    ? 'Disponible maintenant'
+    ? t('donor_dashboard.available_now')
     : '-'
 
   async function loadDashboard() {
@@ -220,7 +220,7 @@ export default function DonorDashboard() {
       }
     } catch (err: unknown) {
       console.error('[DonorDashboard] Error loading:', err)
-      toast.error((err as Error).message ?? 'Erreur de chargement')
+      toast.error((err as Error).message ?? t('donor_dashboard.loading_error'))
     } finally {
       setLoading(false)
     }
@@ -261,7 +261,7 @@ export default function DonorDashboard() {
       <div className="flex h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-red-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Chargement...</p>
+          <p className="text-gray-600">{t('donor_dashboard.loading')}...</p>
         </div>
       </div>
     )
@@ -505,8 +505,8 @@ export default function DonorDashboard() {
                         <Tooltip
                           contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: '12px' }}
                         />
-                        <Bar dataKey="alertes" name="Alertes" fill="#93c5fd" radius={[4, 4, 0, 0]} />
-                        <Bar dataKey="reponses" name="Réponses" fill="#dc2626" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="alertes" name={t('donor_dashboard.chart_alerts')} fill="#93c5fd" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="reponses" name={t('donor_dashboard.chart_responses')} fill="#dc2626" radius={[4, 4, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
@@ -625,19 +625,19 @@ export default function DonorDashboard() {
           {currentView === 'stats' && (
             <div className="space-y-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Statistiques détaillées</h2>
-                <p className="text-sm text-gray-500 mt-1">Analyse approfondie de votre activité</p>
+                <h2 className="text-2xl font-bold text-gray-900">{t('donor_dashboard.stats_title')}</h2>
+                <p className="text-sm text-gray-500 mt-1">{t('donor_dashboard.stats_desc')}</p>
               </div>
 
               {/* Extended KPIs */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {[
-                  { label: 'Total dons', value: stats?.donation_count ?? 0, icon: HeartPulse, color: 'text-red-600', bg: 'bg-red-50' },
-                  { label: 'Dons complétés', value: stats?.completed_donations ?? 0, icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-                  { label: 'Alertes reçues', value: stats?.alerts_received ?? 0, icon: AlertTriangle, color: 'text-amber-600', bg: 'bg-amber-50' },
-                  { label: 'Réponses acceptées', value: stats?.responses_accepted ?? 0, icon: CheckCircle, color: 'text-blue-600', bg: 'bg-blue-50' },
-                  { label: 'Réponses refusées', value: stats?.responses_declined ?? 0, icon: MapPin, color: 'text-gray-600', bg: 'bg-gray-50' },
-                  { label: 'Vies impactées', value: stats?.lives_impacted ?? 0, icon: Users, color: 'text-purple-600', bg: 'bg-purple-50' },
+                  { label: t('donor_dashboard.total_donations'), value: stats?.donation_count ?? 0, icon: HeartPulse, color: 'text-red-600', bg: 'bg-red-50' },
+                  { label: t('donor_dashboard.completed_donations'), value: stats?.completed_donations ?? 0, icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+                  { label: t('donor_dashboard.alerts_received_count'), value: stats?.alerts_received ?? 0, icon: AlertTriangle, color: 'text-amber-600', bg: 'bg-amber-50' },
+                  { label: t('donor_dashboard.accepted_responses'), value: stats?.responses_accepted ?? 0, icon: CheckCircle, color: 'text-blue-600', bg: 'bg-blue-50' },
+                  { label: t('donor_dashboard.declined_responses'), value: stats?.responses_declined ?? 0, icon: MapPin, color: 'text-gray-600', bg: 'bg-gray-50' },
+                  { label: t('donor_dashboard.lives_impacted'), value: stats?.lives_impacted ?? 0, icon: Users, color: 'text-purple-600', bg: 'bg-purple-50' },
                 ].map((kpi) => {
                   const Icon = kpi.icon
                   return (
@@ -656,8 +656,8 @@ export default function DonorDashboard() {
 
               {/* Large Chart */}
               <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <h3 className="font-bold text-gray-900 mb-1 text-lg">Évolution mensuelle</h3>
-                <p className="text-sm text-gray-500 mb-6">Alertes reçues vs réponses acceptées</p>
+                <h3 className="font-bold text-gray-900 mb-1 text-lg">{t('donor_dashboard.monthly_evolution')}</h3>
+                <p className="text-sm text-gray-500 mb-6">{t('donor_dashboard.alerts_vs_responses')}</p>
                 <ResponsiveContainer width="100%" height={350}>
                   <BarChart data={monthlyChartData} barSize={20} barGap={8}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -666,8 +666,8 @@ export default function DonorDashboard() {
                     <Tooltip
                       contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: '13px' }}
                     />
-                    <Bar dataKey="alertes" name="Alertes reçues" fill="#93c5fd" radius={[6, 6, 0, 0]} />
-                    <Bar dataKey="reponses" name="Réponses acceptées" fill="#dc2626" radius={[6, 6, 0, 0]} />
+                    <Bar dataKey="alertes" name={t('donor_dashboard.received_alerts')} fill="#93c5fd" radius={[6, 6, 0, 0]} />
+                    <Bar dataKey="reponses" name={t('donor_dashboard.accepted_responses_chart')} fill="#dc2626" radius={[6, 6, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -677,16 +677,16 @@ export default function DonorDashboard() {
           {currentView === 'settings' && (
             <div className="space-y-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Paramètres</h2>
-                <p className="text-sm text-gray-500 mt-1">Gérez vos informations personnelles</p>
+                <h2 className="text-2xl font-bold text-gray-900">{t('donor_dashboard.settings_title')}</h2>
+                <p className="text-sm text-gray-500 mt-1">{t('donor_dashboard.settings_desc')}</p>
               </div>
 
               {/* User Info */}
               <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <h3 className="font-bold text-gray-900 mb-4">Informations personnelles</h3>
+                <h3 className="font-bold text-gray-900 mb-4">{t('donor_dashboard.personal_info')}</h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Nom complet</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">{t('donor_dashboard.full_name')}</label>
                     <input
                       type="text"
                       value={`${currentUser?.first_name || ''} ${currentUser?.last_name || ''}`}
@@ -695,7 +695,7 @@ export default function DonorDashboard() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">{t('donor_dashboard.email')}</label>
                     <input
                       type="email"
                       value={currentUser?.email || ''}
@@ -704,7 +704,7 @@ export default function DonorDashboard() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Téléphone</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">{t('donor_dashboard.phone')}</label>
                     <input
                       type="tel"
                       value={currentUser?.phone || ''}
@@ -713,7 +713,7 @@ export default function DonorDashboard() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Groupe sanguin</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">{t('donor_dashboard.blood_type_label')}</label>
                     <input
                       type="text"
                       value={currentUser?.blood_type || ''}
@@ -726,12 +726,12 @@ export default function DonorDashboard() {
 
               {/* Notifications */}
               <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <h3 className="font-bold text-gray-900 mb-4">Notifications</h3>
+                <h3 className="font-bold text-gray-900 mb-4">{t('donor_dashboard.notifications')}</h3>
                 <div className="space-y-3">
                   {[
-                    { label: 'Alertes d\'urgence', desc: 'Recevoir les alertes critiques par notification' },
-                    { label: 'Notifications par email', desc: 'Recevoir un résumé par email' },
-                    { label: 'Rappels de don', desc: 'Être notifié quand vous êtes éligible' },
+                    { label: t('donor_dashboard.emergency_alerts'), desc: t('donor_dashboard.emergency_alerts_desc') },
+                    { label: t('donor_dashboard.email_notifications'), desc: t('donor_dashboard.email_notifications_desc') },
+                    { label: t('donor_dashboard.donation_reminders'), desc: t('donor_dashboard.donation_reminders_desc') },
                   ].map((item) => (
                     <div key={item.label} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
                       <div>
