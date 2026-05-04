@@ -1029,7 +1029,7 @@ export default function HospitalDashboard() {
                           <span className="text-red-700 font-bold">{type}</span>
                         </div>
                         <p className="text-2xl font-bold text-gray-900">{count}</p>
-                        <p className="text-xs text-gray-500 mt-1">alertes</p>
+                        <p className="text-xs text-gray-500 mt-1">{t('hospital_dashboard.alerts')}</p>
                       </div>
                     )
                   })}
