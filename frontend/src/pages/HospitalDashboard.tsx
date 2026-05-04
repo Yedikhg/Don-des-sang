@@ -257,7 +257,7 @@ export default function HospitalDashboard() {
         video: videoFile,
       })
       setShowAlertModal(false)
-      toast.success(`Alerte lancée ! Les donneurs ${alertForm.bloodType} proches ont été notifiés.`)
+      toast.success(t('hospital_dashboard.alert_launched', { bloodType: alertForm.bloodType }))
       setVideoFile(null)
       await refresh()
     } catch (err: unknown) {
@@ -269,28 +269,28 @@ export default function HospitalDashboard() {
 
   const handleVerifyDonor = async (donorId: string) => {
     if (!activeAlert) {
-      toast.error("Aucune alerte active")
+      toast.error(t('hospital_dashboard.no_active_alert_error'))
       return
     }
     try {
       await hospitalApi.verifyDonor({ donor_id: donorId, alert_id: activeAlert.id })
       setQrDonorId(donorId)
       setShowQRModal(false)
-      toast.success(`Arrivée du donneur confirmée.`)
+      toast.success(t('hospital_dashboard.donor_arrival_confirmed'))
       await refresh()
     } catch (err: unknown) {
-      toast.error((err as Error).message ?? "Erreur lors de la vérification")
+      toast.error((err as Error).message ?? t('hospital_dashboard.scan_error'))
     }
   }
 
   const handleManualVerify = async () => {
     const value = manualDonorId.trim()
     if (!value) {
-      toast.error('Veuillez saisir un ID donneur ou un code')
+      toast.error(t('hospital_dashboard.enter_donor_id'))
       return
     }
     if (!activeAlert) {
-      toast.error("Aucune alerte active")
+      toast.error(t('hospital_dashboard.no_active_alert_error'))
       return
     }
     try {
@@ -302,10 +302,10 @@ export default function HospitalDashboard() {
       })
       setShowQRModal(false)
       setManualDonorId('')
-      toast.success(`Arrivée du donneur confirmée.`)
+      toast.success(t('hospital_dashboard.donor_arrival_confirmed'))
       await refresh()
     } catch (err: unknown) {
-      toast.error((err as Error).message ?? "Erreur lors de la vérification")
+      toast.error((err as Error).message ?? t('hospital_dashboard.scan_error'))
     }
   }
 
@@ -389,7 +389,7 @@ export default function HospitalDashboard() {
 
         const BarcodeDetectorCtor = (window as any).BarcodeDetector
         if (!BarcodeDetectorCtor) {
-          setScannerStatus("Scanner QR natif indisponible, utilisez la saisie manuelle.")
+          setScannerStatus(t('hospital_dashboard.qr_scanner_unavailable'))
           return
         }
 
@@ -711,8 +711,8 @@ export default function HospitalDashboard() {
                         <Tooltip
                           contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: '12px' }}
                         />
-                        <Bar dataKey="reponses" name="Réponses" fill="#93c5fd" radius={[4, 4, 0, 0]} />
-                        <Bar dataKey="dons" name="Dons" fill="#dc2626" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="reponses" name={t('hospital_dashboard.responses_legend')} fill="#93c5fd" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="dons" name={t('hospital_dashboard.donations')} fill="#dc2626" radius={[4, 4, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
@@ -758,29 +758,29 @@ export default function HospitalDashboard() {
           {currentView === 'in_progress' && (
             <div className="space-y-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Don en cours</h2>
+                <h2 className="text-2xl font-bold text-gray-900">{t('hospital_dashboard.in_progress_title')}</h2>
                 <p className="text-sm text-gray-500 mt-1">
-                  Suivi en direct des donneurs ayant repondu a l'alerte active
+                  {t('hospital_dashboard.in_progress_desc')}
                 </p>
               </div>
 
               {!activeAlert ? (
                 <div className="bg-white rounded-lg border border-gray-200 p-8 text-center text-sm text-gray-500">
-                  Aucune alerte active pour le moment.
+                  {t('hospital_dashboard.no_active_alert')}
                 </div>
               ) : (
                 <div className="grid lg:grid-cols-5 gap-6">
                   <div className="lg:col-span-2 bg-white rounded-lg border border-gray-200">
                     <div className="p-4 border-b border-gray-200">
-                      <h3 className="font-bold text-gray-900">Donneurs repondants</h3>
+                      <h3 className="font-bold text-gray-900">{t('hospital_dashboard.responding_donors')}</h3>
                       <p className="text-xs text-gray-500 mt-1">
-                        {responses.length} donneur(s) pour l'alerte {activeAlert.blood_type}
+                        {t('hospital_dashboard.donors_for_alert', { count: responses.length, bloodType: activeAlert.blood_type })}
                       </p>
                     </div>
                     <div className="divide-y divide-gray-100 max-h-[520px] overflow-y-auto">
                       {responses.length === 0 ? (
                         <div className="px-4 py-8 text-center text-sm text-gray-500">
-                          Aucun donneur n'a encore repondu a cette alerte.
+                          {t('hospital_dashboard.no_donor_responded')}
                         </div>
                       ) : (
                         responses.map((donor) => (
@@ -802,7 +802,7 @@ export default function HospitalDashboard() {
                                   ? 'bg-emerald-50 text-emerald-700'
                                   : 'bg-blue-50 text-blue-700'
                               }`}>
-                                {donor.status === 'completed' ? 'Arrive' : `ETA ${donor.eta_minutes} min`}
+                                {donor.status === 'completed' ? t('hospital_dashboard.arrived') : t('hospital_dashboard.eta', { minutes: donor.eta_minutes })}
                               </span>
                             </div>
                           </div>
@@ -813,8 +813,8 @@ export default function HospitalDashboard() {
 
                   <div className="lg:col-span-3 bg-white rounded-lg border border-gray-200 overflow-hidden">
                     <div className="p-4 border-b border-gray-200">
-                      <h3 className="font-bold text-gray-900">Position des donneurs</h3>
-                      <p className="text-xs text-gray-500 mt-1">Mise a jour automatique toutes les 5 secondes</p>
+                      <h3 className="font-bold text-gray-900">{t('hospital_dashboard.donor_position')}</h3>
+                      <p className="text-xs text-gray-500 mt-1">{t('hospital_dashboard.auto_update')}</p>
                     </div>
                     <div className="h-[520px]">
                       <MapContainer
@@ -844,7 +844,7 @@ export default function HospitalDashboard() {
                             position={[Number(currentUser.latitude), Number(currentUser.longitude)]}
                             icon={hospitalIcon}
                           >
-                            <Popup>Votre hopital (position de l'alerte)</Popup>
+                            <Popup>{t('hospital_dashboard.hospital_position')}</Popup>
                           </Marker>
                         )}
                         {donorsWithValidCoords.map((donor) => {
@@ -880,9 +880,9 @@ export default function HospitalDashboard() {
                                 <Popup>
                                   <div className="text-sm">
                                     <p className="font-semibold">{donor.donor_name}</p>
-                                    <p>Groupe: {donor.blood_type}</p>
-                                    <p>Distance: {donor.distance_km?.toFixed(1) ?? '0.0'} km</p>
-                                    <p>{donor.status === 'completed' ? 'Statut: Arrive' : `ETA: ${donor.eta_minutes} min`}</p>
+                                    <p>{t('hospital_dashboard.group')}: {donor.blood_type}</p>
+                                    <p>{t('hospital_dashboard.distance')}: {donor.distance_km?.toFixed(1) ?? '0.0'} {t('hospital_dashboard.km')}</p>
+                                    <p>{t('hospital_dashboard.status')}: {donor.status === 'completed' ? t('hospital_dashboard.arrived') : t('hospital_dashboard.eta', { minutes: donor.eta_minutes })}</p>
                                   </div>
                                 </Popup>
                               </CircleMarker>
@@ -970,19 +970,19 @@ export default function HospitalDashboard() {
           {currentView === 'stats' && (
             <div className="space-y-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Statistiques détaillées</h2>
-                <p className="text-sm text-gray-500 mt-1">Analyse approfondie de votre activité</p>
+                <h2 className="text-2xl font-bold text-gray-900">{t('hospital_dashboard.stats_title')}</h2>
+                <p className="text-sm text-gray-500 mt-1">{t('hospital_dashboard.stats_desc')}</p>
               </div>
 
               {/* Extended KPIs */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {[
-                  { label: 'Total alertes', value: alerts.length, icon: Zap, color: 'text-red-600', bg: 'bg-red-50' },
-                  { label: 'Alertes complétées', value: alerts.filter(a => a.status === 'completed').length, icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-                  { label: 'Alertes actives', value: alerts.filter(a => a.status === 'active').length, icon: AlertTriangle, color: 'text-amber-600', bg: 'bg-amber-50' },
-                  { label: 'Donneurs dans rayon', value: stats?.donors_in_radius ?? 0, icon: MapPin, color: 'text-blue-600', bg: 'bg-blue-50' },
-                  { label: 'Donneurs notifiés', value: stats?.donors_notified ?? 0, icon: Users, color: 'text-purple-600', bg: 'bg-purple-50' },
-                  { label: 'Donneurs arrivés', value: stats?.donors_arrived ?? 0, icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+                  { label: t('hospital_dashboard.total_alerts'), value: alerts.length, icon: Zap, color: 'text-red-600', bg: 'bg-red-50' },
+                  { label: t('hospital_dashboard.completed_alerts'), value: alerts.filter(a => a.status === 'completed').length, icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+                  { label: t('hospital_dashboard.active_alerts_count'), value: alerts.filter(a => a.status === 'active').length, icon: AlertTriangle, color: 'text-amber-600', bg: 'bg-amber-50' },
+                  { label: t('hospital_dashboard.donors_in_radius'), value: stats?.donors_in_radius ?? 0, icon: MapPin, color: 'text-blue-600', bg: 'bg-blue-50' },
+                  { label: t('hospital_dashboard.donors_notified'), value: stats?.donors_notified ?? 0, icon: Users, color: 'text-purple-600', bg: 'bg-purple-50' },
+                  { label: t('hospital_dashboard.donors_arrived'), value: stats?.donors_arrived ?? 0, icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50' },
                 ].map((kpi) => {
                   const Icon = kpi.icon
                   return (
@@ -1001,8 +1001,8 @@ export default function HospitalDashboard() {
 
               {/* Large Chart */}
               <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <h3 className="font-bold text-gray-900 mb-1 text-lg">Évolution hebdomadaire</h3>
-                <p className="text-sm text-gray-500 mb-6">Comparaison réponses vs dons effectifs</p>
+                <h3 className="font-bold text-gray-900 mb-1 text-lg">{t('hospital_dashboard.weekly_evolution')}</h3>
+                <p className="text-sm text-gray-500 mb-6">{t('hospital_dashboard.comparison_responses_vs_donations')}</p>
                 <ResponsiveContainer width="100%" height={350}>
                   <BarChart data={(stats?.series ?? [])} barSize={20} barGap={8}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -1011,8 +1011,8 @@ export default function HospitalDashboard() {
                     <Tooltip
                       contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: '13px' }}
                     />
-                    <Bar dataKey="reponses" name="Réponses" fill="#93c5fd" radius={[6, 6, 0, 0]} />
-                    <Bar dataKey="dons" name="Dons effectifs" fill="#dc2626" radius={[6, 6, 0, 0]} />
+                    <Bar dataKey="reponses" name={t('hospital_dashboard.responses_legend')} fill="#93c5fd" radius={[6, 6, 0, 0]} />
+                    <Bar dataKey="dons" name={t('hospital_dashboard.effective_donations')} fill="#dc2626" radius={[6, 6, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -1041,16 +1041,16 @@ export default function HospitalDashboard() {
           {currentView === 'settings' && (
             <div className="space-y-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Paramètres</h2>
-                <p className="text-sm text-gray-500 mt-1">Gérez les informations de votre établissement</p>
+                <h2 className="text-2xl font-bold text-gray-900">{t('hospital_dashboard.settings_title')}</h2>
+                <p className="text-sm text-gray-500 mt-1">{t('hospital_dashboard.settings_desc')}</p>
               </div>
 
               {/* Hospital Info */}
               <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <h3 className="font-bold text-gray-900 mb-4">Informations de l'hôpital</h3>
+                <h3 className="font-bold text-gray-900 mb-4">{t('hospital_dashboard.hospital_info')}</h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Nom de l'établissement</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">{t('hospital_dashboard.hospital_name')}</label>
                     <input
                       type="text"
                       value={currentUser?.first_name || ''}
@@ -1059,7 +1059,7 @@ export default function HospitalDashboard() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">{t('hospital_dashboard.email')}</label>
                     <input
                       type="email"
                       value={currentUser?.email || ''}
@@ -1068,7 +1068,7 @@ export default function HospitalDashboard() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Téléphone</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">{t('hospital_dashboard.phone')}</label>
                     <input
                       type="tel"
                       value={currentUser?.phone || ''}
@@ -1081,12 +1081,12 @@ export default function HospitalDashboard() {
 
               {/* Notifications */}
               <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <h3 className="font-bold text-gray-900 mb-4">Notifications</h3>
+                <h3 className="font-bold text-gray-900 mb-4">{t('hospital_dashboard.notifications')}</h3>
                 <div className="space-y-3">
                   {[
-                    { label: 'Notifications par email', desc: 'Recevoir les alertes par email' },
-                    { label: 'Notifications push', desc: 'Recevoir les notifications dans le navigateur' },
-                    { label: 'Résumé quotidien', desc: 'Recevoir un résumé quotidien de l\'activité' },
+                    { label: t('hospital_dashboard.email_notifications'), desc: t('hospital_dashboard.email_notifications_desc') },
+                    { label: t('hospital_dashboard.push_notifications'), desc: t('hospital_dashboard.push_notifications_desc') },
+                    { label: t('hospital_dashboard.daily_summary'), desc: t('hospital_dashboard.daily_summary_desc') },
                   ].map((item) => (
                     <div key={item.label} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
                       <div>
@@ -1104,10 +1104,10 @@ export default function HospitalDashboard() {
 
               {/* Danger Zone */}
               <div className="bg-white rounded-lg border border-red-200 p-6">
-                <h3 className="font-bold text-red-900 mb-2">Zone dangereuse</h3>
-                <p className="text-sm text-gray-600 mb-4">Actions irréversibles sur votre compte</p>
+                <h3 className="font-bold text-red-900 mb-2">{t('hospital_dashboard.danger_zone')}</h3>
+                <p className="text-sm text-gray-600 mb-4">{t('hospital_dashboard.danger_zone_desc')}</p>
                 <button className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition-colors">
-                  Supprimer le compte
+                  {t('hospital_dashboard.delete_account')}
                 </button>
               </div>
             </div>
