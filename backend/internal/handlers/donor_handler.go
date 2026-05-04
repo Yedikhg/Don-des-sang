@@ -42,14 +42,16 @@ func (h *DonorHandler) NearbyAlerts(c *fiber.Ctx) error {
 		return utils.ErrorResponse(c, fiber.StatusBadRequest, "Donor location not set (latitude/longitude)")
 	}
 
-	compatible := models.GetCompatibleDonorTypes(models.BloodType(bloodType.String))
-	if len(compatible) == 0 {
+	donorType := models.BloodType(bloodType.String)
+	// Get the list of blood types this donor can donate to
+	canDonateTo := models.BloodCompatibility[donorType]
+	if len(canDonateTo) == 0 {
 		return utils.SuccessResponse(c, []models.NearbyAlert{})
 	}
 
 	// Inline compatible blood types to avoid prepared statements.
-	quoted := make([]string, 0, len(compatible))
-	for _, bt := range compatible {
+	quoted := make([]string, 0, len(canDonateTo))
+	for _, bt := range canDonateTo {
 		quoted = append(quoted, fmt.Sprintf("'%s'", string(bt)))
 	}
 
@@ -201,9 +203,10 @@ func (h *DonorHandler) GetAlert(c *fiber.Ctx) error {
 		return utils.ErrorResponse(c, fiber.StatusInternalServerError, "Database error: "+err.Error())
 	}
 
-	compatible := models.GetCompatibleDonorTypes(models.BloodType(donorBloodType.String))
+	// Check if the donor can donate to the alert's blood type
+	canDonateTo := models.BloodCompatibility[models.BloodType(donorBloodType.String)]
 	allowed := false
-	for _, bt := range compatible {
+	for _, bt := range canDonateTo {
 		if string(bt) == string(d.BloodType) {
 			allowed = true
 			break
