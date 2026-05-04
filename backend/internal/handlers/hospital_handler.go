@@ -35,6 +35,9 @@ func NewHospitalHandler() *HospitalHandler {
 func (h *HospitalHandler) CreateAlert(c *fiber.Ctx) error {
 	hospitalID := auth.GetUserID(c)
 
+	// TEMPORAIRE: Désactivation de la vérification hôpital pour les tests
+	// TODO: Réactiver quand la partie admin sera codée
+	/*
 	var isVerified bool
 	err := database.DB.QueryRow(
 		"SELECT is_verified FROM hospital_verifications WHERE user_id = $1", hospitalID,
@@ -42,6 +45,7 @@ func (h *HospitalHandler) CreateAlert(c *fiber.Ctx) error {
 	if errors.Is(err, sql.ErrNoRows) || !isVerified {
 		return utils.ErrorResponse(c, fiber.StatusForbidden, "Hospital not verified. Please wait for admin approval.")
 	}
+	*/
 
 	var lat, lng float64
 	_ = database.DB.QueryRow("SELECT latitude, longitude FROM users WHERE id = $1", hospitalID).Scan(&lat, &lng)
