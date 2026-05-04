@@ -382,6 +382,7 @@ func (h *DonorHandler) History(c *fiber.Ctx) error {
 // GET /api/v1/donors/stats
 func (h *DonorHandler) Stats(c *fiber.Ctx) error {
 	donorID := auth.GetUserID(c)
+	fmt.Printf("[DEBUG] Stats endpoint called with donorID: %s\n", donorID)
 
 	type DonorStats struct {
 		DonationCount       int     `json:"donation_count"`
@@ -399,9 +400,13 @@ func (h *DonorHandler) Stats(c *fiber.Ctx) error {
 	var stats DonorStats
 
 	// Get donation count from user profile
-	_ = database.DB.QueryRow(
+	err := database.DB.QueryRow(
 		"SELECT donation_count FROM users WHERE id = $1", donorID,
 	).Scan(&stats.DonationCount)
+	if err != nil {
+		fmt.Printf("[DEBUG] Error getting donation_count: %v\n", err)
+	}
+	fmt.Printf("[DEBUG] donation_count for donor %s: %d\n", donorID, stats.DonationCount)
 
 	// Calculate lives impacted (estimate: 1 donation = 3 lives)
 	stats.LivesImpacted = stats.DonationCount * 3

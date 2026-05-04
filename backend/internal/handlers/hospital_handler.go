@@ -468,10 +468,18 @@ func (h *HospitalHandler) VerifyDonor(c *fiber.Ctx) error {
 		return utils.ErrorResponse(c, fiber.StatusNotFound, "No accepted/en-route response found for this donor/alert")
 	}
 
-	_, _ = database.DB.Exec(fmt.Sprintf(`
+	// Update donation count for the donor
+	res, err := database.DB.Exec(fmt.Sprintf(`
 		UPDATE users SET donation_count=donation_count+1, status='available', updated_at=NOW()
 		WHERE id='%s'`, donorID,
 	))
+	if err != nil {
+		fmt.Printf("[DEBUG] Error updating donation_count for donor %s: %v\n", donorID, err)
+	} else {
+		rows, _ := res.RowsAffected()
+		fmt.Printf("[DEBUG] Updated donation_count for donor %s, rows affected: %d\n", donorID, rows)
+	}
+
 	_, _ = database.DB.Exec(fmt.Sprintf(`
 		UPDATE impact_logs
 		SET donors_arrived = donors_arrived + 1, updated_at = NOW()
