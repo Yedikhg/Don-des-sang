@@ -399,44 +399,67 @@ func (h *DonorHandler) Stats(c *fiber.Ctx) error {
 
 	var stats DonorStats
 
-	// Get donation count from user profile
+	// Get donation count from user profile with error handling
+	var donationCount sql.NullInt64
 	err := database.DB.QueryRow(
 		"SELECT donation_count FROM users WHERE id = $1", donorID,
-	).Scan(&stats.DonationCount)
+	).Scan(&donationCount)
 	if err != nil {
-		fmt.Printf("[DEBUG] Error getting donation_count: %v\n", err)
+		fmt.Printf("[ERROR] Failed to get donation_count for donor %s: %v\n", donorID, err)
+		stats.DonationCount = 0
+	} else if donationCount.Valid {
+		stats.DonationCount = int(donationCount.Int64)
+		fmt.Printf("[DEBUG] donation_count for donor %s: %d\n", donorID, stats.DonationCount)
+	} else {
+		stats.DonationCount = 0
+		fmt.Printf("[DEBUG] donation_count is NULL for donor %s, defaulting to 0\n", donorID)
 	}
-	fmt.Printf("[DEBUG] donation_count for donor %s: %d\n", donorID, stats.DonationCount)
 
 	// Calculate lives impacted (estimate: 1 donation = 3 lives)
 	stats.LivesImpacted = stats.DonationCount * 3
 
 	// Count alerts received (all responses)
-	_ = database.DB.QueryRow(
+	var alertsReceived sql.NullInt64
+	err = database.DB.QueryRow(
 		"SELECT COUNT(*) FROM alert_responses WHERE donor_id = $1", donorID,
-	).Scan(&stats.AlertsReceived)
+	).Scan(&alertsReceived)
+	if err == nil && alertsReceived.Valid {
+		stats.AlertsReceived = int(alertsReceived.Int64)
+	}
 
 	// Count accepted responses
-	_ = database.DB.QueryRow(
+	var responsesAccepted sql.NullInt64
+	err = database.DB.QueryRow(
 		"SELECT COUNT(*) FROM alert_responses WHERE donor_id = $1 AND status IN ('en_route', 'completed')", donorID,
-	).Scan(&stats.ResponsesAccepted)
+	).Scan(&responsesAccepted)
+	if err == nil && responsesAccepted.Valid {
+		stats.ResponsesAccepted = int(responsesAccepted.Int64)
+	}
 
 	// Count declined responses
-	_ = database.DB.QueryRow(
+	var responsesDeclined sql.NullInt64
+	err = database.DB.QueryRow(
 		"SELECT COUNT(*) FROM alert_responses WHERE donor_id = $1 AND status = 'declined'", donorID,
-	).Scan(&stats.ResponsesDeclined)
+	).Scan(&responsesDeclined)
+	if err == nil && responsesDeclined.Valid {
+		stats.ResponsesDeclined = int(responsesDeclined.Int64)
+	}
 
 	// Count completed donations
-	_ = database.DB.QueryRow(
+	var completedDonations sql.NullInt64
+	err = database.DB.QueryRow(
 		"SELECT COUNT(*) FROM alert_responses WHERE donor_id = $1 AND status = 'completed'", donorID,
-	).Scan(&stats.CompletedDonations)
+	).Scan(&completedDonations)
+	if err == nil && completedDonations.Valid {
+		stats.CompletedDonations = int(completedDonations.Int64)
+	}
 
 	// Calculate impact score (completed donations * 100 + accepted responses * 10)
 	stats.ImpactScore = stats.CompletedDonations*100 + stats.ResponsesAccepted*10
 
 	// Get last donation date (most recent completed response)
 	var lastDonation *string
-	err := database.DB.QueryRow(`
+	err = database.DB.QueryRow(`
 		SELECT ar.updated_at::text
 		FROM alert_responses ar
 		WHERE ar.donor_id = $1 AND ar.status = 'completed'
