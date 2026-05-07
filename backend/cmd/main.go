@@ -29,16 +29,16 @@ func main() {
 	app := fiber.New(fiber.Config{
 		AppName:      "Urgence-Sang API v1",
 		ErrorHandler: customErrorHandler,
-		BodyLimit:    20 * 1024 * 1024,
+		BodyLimit:    100 * 1024 * 1024,
 	})
 
 	app.Use(recover.New())
 	app.Use(logger.New(logger.Config{
 		Format: "[${time}] ${status} ${method} ${path} ${latency}\n",
 	}))
-	// CORS FIX - Allow specific origins including the frontend Vercel app
+	// CORS FIX - Allow all origins for development and production
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "https://blood-emergency-azure.vercel.app,http://localhost:5173,http://localhost:5174,http://localhost:8080,http://localhost:3000",
+		AllowOrigins:     "*",
 		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
 		AllowMethods:     "GET, POST, PUT, PATCH, DELETE, OPTIONS",
 		AllowCredentials: true,
