@@ -12,7 +12,7 @@ Ce fichier documente l'architecture de déploiement du projet pour faciliter le 
 - **Hébergeur** : Vercel
 - **URL publique** : `https://blood-emergency-azure.vercel.app/` *(ou l'URL spécifique générée par Vercel)*
 - **Variables d'environnement sur Vercel** :
-  - `VITE_API_URL=https://don-des-sang.fly.dev/api/v1`
+  - `VITE_API_URL=https://urgence-sang-api.onrender.com/api/v1`
   - `VITE_AI_URL=https://yedidya1234-urgence-sang-ai.hf.space`
 - **Comment déployer une modification** :
   1. Modifier le code dans le dossier `/frontend`
@@ -20,13 +20,17 @@ Ce fichier documente l'architecture de déploiement du projet pour faciliter le 
   3. Vercel détectera le changement et déploiera automatiquement (CI/CD natif).
 
 ## 3. Backend (Go)
-- **Hébergeur** : Fly.io (Plan d'essai 7 jours)
-- **URL publique de l'API** : `https://don-des-sang.fly.dev`
-- **Point d'entrée (Entrypoint)** : `backend/cmd/main.go` (compilé via le Dockerfile à la racine du dossier backend)
+- **Hébergeur** : Render
+- **URL publique de l'API** : `https://urgence-sang-api.onrender.com`
+- **Nom du service** : `urgence-sang-api`
+- **Point d'entrée (Entrypoint)** : `backend/cmd/main.go`
+- **Build Command** : `go build -o bin/api ./cmd/main.go`
+- **Start Command** : `./bin/api`
+- **Configuration** : Définie dans `render.yaml` à la racine du dépôt.
 - **Comment déployer une modification** :
   1. Modifier le code dans le dossier `/backend`
-  2. Ouvrir un terminal dans le dossier `/backend`
-  3. Exécuter la commande : `flyctl deploy` (Nécessite d'être connecté via `flyctl auth login`)
+  2. Faire un `git push` sur GitHub.
+  3. Render détectera le changement et déploiera automatiquement (CI/CD natif via `render.yaml`).
 
 ## 4. Base de Données (PostgreSQL)
 - **Hébergeur** : Supabase
@@ -47,7 +51,5 @@ Ce fichier documente l'architecture de déploiement du projet pour faciliter le 
 ## Note pour les assistants IA futurs
 Si vous devez modifier un service :
 1. **Frontend** : Modifiez, commitez et pushez. Vercel s'occupe du reste.
-2. **IA** : Modifiez, commitez et pushez. Les GitHub Actions s'occupent du reste.
-3. **Backend** : Actuellement sur Fly.io en mode manuel/CLI. Si Fly.io expire, envisagez de migrer le code Go vers les Serverless Functions de Vercel (en plaçant le code dans un dossier `/api` à la racine) pour un hébergement gratuit à vie.
-
-
+2. **Backend** : Modifiez, commitez et pushez. Render s'occupe du reste (déploiement automatique via `render.yaml`).
+3. **IA** : Modifiez, commitez et pushez. Les GitHub Actions s'occupent du reste.
