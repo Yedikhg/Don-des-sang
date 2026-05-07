@@ -268,12 +268,24 @@ export default function HospitalDashboard() {
   }, [token])
 
   const handleLaunchAlert = async () => {
+    if (!alertForm.bloodType || !alertForm.quantity || !alertForm.expiresIn) {
+      toast.error("Veuillez remplir tous les champs obligatoires.")
+      return
+    }
+    const quantity = parseInt(alertForm.quantity)
+    const expiresIn = parseInt(alertForm.expiresIn)
+    
+    if (isNaN(quantity) || quantity <= 0 || isNaN(expiresIn) || expiresIn <= 0) {
+      toast.error("Valeurs numériques invalides.")
+      return
+    }
+
     setLaunching(true)
     try {
       await hospitalApi.createAlert({
         blood_type: alertForm.bloodType,
-        quantity_units: parseInt(alertForm.quantity),
-        expires_in_hours: parseInt(alertForm.expiresIn),
+        quantity_units: quantity,
+        expires_in_hours: expiresIn,
         video: videoFile,
       })
       setShowAlertModal(false)
@@ -444,6 +456,8 @@ export default function HospitalDashboard() {
       stopScanner()
     }
   }, [showQRModal, activeAlert?.id])
+
+  if (!currentUser) return null;
 
   return (
     <div className="flex h-screen bg-gray-50">

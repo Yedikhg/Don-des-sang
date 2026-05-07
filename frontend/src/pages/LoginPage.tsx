@@ -79,6 +79,7 @@ export default function LoginPage() {
               <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('login.email')} *</label>
               <input
                 type="email"
+                required
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 placeholder={t('login.email_placeholder')}
@@ -91,6 +92,7 @@ export default function LoginPage() {
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
+                  required
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
                   placeholder={t('login.password_placeholder')}

@@ -70,6 +70,16 @@ export default function DonorDashboard() {
   const [history, setHistory] = useState<DonorHistoryItem[]>([])
   const [loading, setLoading] = useState(true)
   const [activeDonationAlertId, setActiveDonationAlertId] = useState<string | null>(null)
+  const [notificationSettings, setNotificationSettings] = useState(() => {
+    const saved = localStorage.getItem('donor_notifications')
+    return saved ? JSON.parse(saved) : { alerts: true, email: true, reminders: true }
+  })
+
+  const toggleNotification = (key: 'alerts' | 'email' | 'reminders') => {
+    const newSettings = { ...notificationSettings, [key]: !notificationSettings[key] }
+    setNotificationSettings(newSettings)
+    localStorage.setItem('donor_notifications', JSON.stringify(newSettings))
+  }
 
   async function checkUrgentAlerts() {
     try {
@@ -266,6 +276,8 @@ export default function DonorDashboard() {
       </div>
     )
   }
+
+  if (!currentUser) return null;
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -729,9 +741,9 @@ export default function DonorDashboard() {
                 <h3 className="font-bold text-gray-900 mb-4">{t('donor_dashboard.notifications')}</h3>
                 <div className="space-y-3">
                   {[
-                    { label: t('donor_dashboard.emergency_alerts'), desc: t('donor_dashboard.emergency_alerts_desc') },
-                    { label: t('donor_dashboard.email_notifications'), desc: t('donor_dashboard.email_notifications_desc') },
-                    { label: t('donor_dashboard.donation_reminders'), desc: t('donor_dashboard.donation_reminders_desc') },
+                    { key: 'alerts', label: t('donor_dashboard.emergency_alerts'), desc: t('donor_dashboard.emergency_alerts_desc') },
+                    { key: 'email', label: t('donor_dashboard.email_notifications'), desc: t('donor_dashboard.email_notifications_desc') },
+                    { key: 'reminders', label: t('donor_dashboard.donation_reminders'), desc: t('donor_dashboard.donation_reminders_desc') },
                   ].map((item) => (
                     <div key={item.label} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
                       <div>
@@ -739,7 +751,12 @@ export default function DonorDashboard() {
                         <p className="text-xs text-gray-500 mt-0.5">{item.desc}</p>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" className="sr-only peer" defaultChecked />
+                        <input 
+                          type="checkbox" 
+                          className="sr-only peer" 
+                          checked={notificationSettings[item.key as keyof typeof notificationSettings]} 
+                          onChange={() => toggleNotification(item.key as keyof typeof notificationSettings)} 
+                        />
                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                       </label>
                     </div>

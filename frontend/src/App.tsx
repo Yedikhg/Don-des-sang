@@ -28,8 +28,24 @@ function App() {
               </>
             }
           />
-          <Route path="/register/donor" element={<Navigate to="/donor/register" replace />} />
-          <Route path="/register/hospital" element={<Navigate to="/hospital/register" replace />} />
+          <Route
+            path="/register/donor"
+            element={
+              <>
+                <Navbar />
+                <div className="pt-16"><DonorRegistration /></div>
+              </>
+            }
+          />
+          <Route
+            path="/register/hospital"
+            element={
+              <>
+                <Navbar />
+                <div className="pt-16"><HospitalRegistration /></div>
+              </>
+            }
+          />
           <Route
             path="/hospital/register"
             element={

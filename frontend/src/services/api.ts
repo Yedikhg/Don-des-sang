@@ -22,7 +22,8 @@ async function req<T>(url: string, opts: RequestInit = {}): Promise<T> {
 
   if (DEBUG) console.log('[API] Headers:', headers)
 
-  const res = await fetch(url, { ...opts, headers })
+  const fetchOpts: RequestInit = { ...opts, headers, cache: 'no-store' }
+  const res = await fetch(url, fetchOpts)
   const contentType = res.headers.get('content-type') ?? ''
   const json = contentType.includes('application/json') ? await res.json() : null
   
