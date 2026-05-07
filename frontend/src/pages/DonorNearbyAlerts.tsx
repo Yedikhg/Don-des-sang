@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
@@ -28,7 +29,7 @@ export default function DonorNearbyAlerts() {
       const nextAlerts: DonorAlert[] = Array.isArray(res.data) ? res.data : []
       setAlerts(nextAlerts)
     } catch (err: unknown) {
-      toast.error((err as Error).message ?? 'Erreur de chargement')
+      toast.error((err as Error).message ?? t('donor_nearby_alerts.error_loading'))
     } finally {
       setLoading(false)
     }
@@ -60,12 +61,12 @@ export default function DonorNearbyAlerts() {
             { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 },
           )
         }
-        toast.success('Réponse acceptée ! Redirection vers la navigation...')
+        toast.success(t('donor_nearby_alerts.accept_toast'))
         setTimeout(() => {
           navigate(`/donor/navigation/${alertId}`)
         }, 1500)
       } else {
-        toast.success('Réponse refusée')
+        toast.success(t('donor_nearby_alerts.decline_toast'))
         await loadAlerts()
       }
     } catch (err: unknown) {
@@ -151,7 +152,7 @@ export default function DonorNearbyAlerts() {
 
                 <div className="mb-4">
                   <p className="text-gray-600">
-                    <span className="font-semibold">{alert.quantity_units}</span> poche(s) de sang nécessaire(s)
+                    <span className="font-semibold">{alert.quantity_units}</span> {t('donor_nearby_alerts.pouches_needed')}
                   </p>
                 </div>
 
@@ -173,7 +174,7 @@ export default function DonorNearbyAlerts() {
                     className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 disabled:opacity-50 text-white font-semibold rounded-lg transition-all duration-200 hover:scale-105"
                   >
                     <CheckCircle className="w-5 h-5" />
-                    {responding === alert.id ? 'En cours...' : 'Accepter'}
+                    {responding === alert.id ? t('donor_nearby_alerts.processing') : t('donor_nearby_alerts.accept')}
                   </button>
                   <button
                     onClick={() => handleRespond(alert.id, false)}
@@ -181,7 +182,7 @@ export default function DonorNearbyAlerts() {
                     className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gray-200 hover:bg-gray-300 active:bg-gray-400 disabled:opacity-50 text-gray-700 font-semibold rounded-lg transition-all duration-200 hover:scale-105"
                   >
                     <X className="w-5 h-5" />
-                    Refuser
+                    {t('donor_nearby_alerts.decline')}
                   </button>
                 </div>
               </div>

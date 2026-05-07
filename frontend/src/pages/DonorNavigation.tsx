@@ -50,6 +50,7 @@ function NavigationMapFitBounds({ points }: { points: RouteLatLng[] }) {
 type RouteMode = 'osrm' | 'straight' | 'none'
 
 export default function DonorNavigation() {
+  const { t } = useTranslation()
   const { alertId } = useParams<{ alertId: string }>()
   const navigate = useNavigate()
   const { currentUser } = useApp()
@@ -82,9 +83,9 @@ export default function DonorNavigation() {
       if (parsed?.alert_id === alertId && parsed?.cached_alert) {
         try {
           setAlert(normalizeDonorAlertDetail(parsed.cached_alert))
-          toast.warning('Mode hors ligne: informations d’alerte restaurées localement.')
+          toast.warning(t('donor_navigation.offline_mode'))
         } catch {
-          toast.error('Données d’alerte locales invalides')
+          toast.error(t('donor_navigation.invalid_local_data'))
           navigate('/donor/nearby-alerts')
         }
       } else {
@@ -205,9 +206,9 @@ export default function DonorNavigation() {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         })
-        toast.success('Position mise à jour')
+        toast.success(t('donor_navigation.location_updated'))
       },
-      () => toast.error('Position indisponible'),
+      () => toast.error(t('donor_navigation.location_unavailable')),
       { enableHighAccuracy: true, timeout: 15000 },
     )
   }
@@ -234,7 +235,7 @@ export default function DonorNavigation() {
       <div className="flex h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-red-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Chargement des détails...</p>
+          <p className="text-gray-600">{t('donor_navigation.loading_details')}</p>
         </div>
       </div>
     )
@@ -244,12 +245,12 @@ export default function DonorNavigation() {
     return (
       <div className="flex h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
-          <p className="text-gray-600">Alerte non trouvée</p>
+          <p className="text-gray-600">{t('donor_navigation.alert_not_found')}</p>
           <button
             onClick={() => navigate('/donor/nearby-alerts')}
             className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg"
           >
-            Retour aux alertes
+            {t('donor_navigation.back_to_alerts')}
           </button>
         </div>
       </div>
@@ -282,7 +283,7 @@ export default function DonorNavigation() {
                   <Droplets className="w-4 h-4" />
                   {alert.blood_type}
                 </span>
-                <span className="text-sm text-gray-600">{alert.units_needed} poche(s) nécessaire(s)</span>
+                <span className="text-sm text-gray-600">{alert.units_needed} {t('donor_navigation.pouches_needed')}</span>
               </div>
             </div>
             <div className="text-right">
@@ -303,16 +304,16 @@ export default function DonorNavigation() {
           <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
             <div className="flex items-center gap-2 text-emerald-700 font-semibold mb-2">
               <CheckCircle className="w-5 h-5" />
-              Réponse acceptée
+              {t('donor_navigation.response_accepted')}
             </div>
             <p className="text-emerald-600 text-sm">
-              Vous avez accepté cette alerte. L'hôpital a été notifié de votre arrivée prochaine.
+              {t('donor_navigation.accepted_desc')}
             </p>
             {confirmationCode ? (
               <div className="mt-3 pt-3 border-t border-emerald-200">
-                <p className="text-xs text-emerald-700 uppercase tracking-wider">Code de confirmation</p>
+                <p className="text-xs text-emerald-700 uppercase tracking-wider">{t('donor_navigation.confirmation_code')}</p>
                 <p className="text-xl font-black tracking-wider text-emerald-700">{confirmationCode}</p>
-                <p className="text-xs text-emerald-600">Présentez ce code à l'hôpital à votre arrivée.</p>
+                <p className="text-xs text-emerald-600">{t('donor_navigation.present_code')}</p>
                 <img
                   className="mt-3 h-36 w-36 rounded-md border border-emerald-200 bg-white p-1"
                   alt="QR code de confirmation donneur"
@@ -336,14 +337,13 @@ export default function DonorNavigation() {
         </div>
 
         <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">Carte & itinéraire</h3>
+          <h3 className="text-lg font-bold text-gray-900 mb-4">{t('donor_navigation.map_route')}</h3>
           <p className="text-sm text-gray-600 mb-3">
-            Votre position (bleu), l'hôpital (rouge), et le trajet à suivre sur le réseau routier lorsque c'est
-            disponible.
+            {t('donor_navigation.map_desc')}
           </p>
           {!Number.isFinite(alert.latitude) || !Number.isFinite(alert.longitude) ? (
             <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-              Coordonnées de l'hôpital indisponibles. Utilisez Google Maps ou Waze ci-dessous.
+              {t('donor_navigation.no_coords')}
             </div>
           ) : (
           <div className="overflow-hidden rounded-xl border border-gray-200 h-[min(420px,70vh)] min-h-[280px] relative z-0">
@@ -358,7 +358,7 @@ export default function DonorNavigation() {
                 <Popup>
                   <span className="font-semibold">{alert.hospital_name}</span>
                   <br />
-                  Destination
+                  {t('donor_navigation.destination')}
                 </Popup>
               </Marker>
 
@@ -375,7 +375,7 @@ export default function DonorNavigation() {
                     weight: 2,
                   }}
                 >
-                  <Popup>Vous êtes ici</Popup>
+                  <Popup>{t('donor_navigation.you_are_here')}</Popup>
                 </CircleMarker>
               )}
 
@@ -397,21 +397,21 @@ export default function DonorNavigation() {
           <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-gray-600">
             <div>
               {routeLoading && userLocation ? (
-                <span>Calcul de l'itinéraire…</span>
+                <span>{t('donor_navigation.calculating_route')}</span>
               ) : routeMode === 'osrm' ? (
-                <span className="text-blue-700 font-medium">Itinéraire routier (aperçu)</span>
+                <span className="text-blue-700 font-medium">{t('donor_navigation.driving_route')}</span>
               ) : routeMode === 'straight' && userLocation ? (
                 <span className="text-slate-600">
-                  Ligne directe (service d'itinéraire indisponible — ouvrez Google Maps pour la navigation détaillée).
+                  {t('donor_navigation.direct_line')}
                 </span>
               ) : !userLocation ? (
                 <span className={geoDenied ? 'text-amber-700' : ''}>
                   {geoDenied
-                    ? 'Localisation refusée : la carte affiche l’hôpital. Activez la géolocalisation ou utilisez les apps ci-dessous.'
-                    : 'Recherche de votre position…'}
+                    ? t('donor_navigation.geo_denied')
+                    : t('donor_navigation.finding_location')}
                 </span>
               ) : (
-                <span>Prêt</span>
+                <span>{t('donor_navigation.ready')}</span>
               )}
             </div>
             <button
@@ -420,15 +420,15 @@ export default function DonorNavigation() {
               className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-800 hover:bg-gray-50"
             >
               <LocateFixed className="h-3.5 w-3.5" />
-              Actualiser la position
+              {t('donor_navigation.refresh_location')}
             </button>
           </div>
         </div>
 
         <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">Navigation GPS (applications)</h3>
+          <h3 className="text-lg font-bold text-gray-900 mb-4">{t('donor_navigation.gps_apps')}</h3>
           <p className="text-sm text-gray-500 mb-4">
-            Pour les indications virage par virage et le trafic en temps réel, ouvrez une application dédiée.
+            {t('donor_navigation.gps_apps_desc')}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <button
@@ -439,8 +439,8 @@ export default function DonorNavigation() {
                 <Navigation className="w-6 h-6 text-blue-600" />
               </div>
               <div className="text-left">
-                <p className="font-semibold text-gray-900">Google Maps</p>
-                <p className="text-sm text-gray-500">Navigation GPS complète</p>
+                <p className="font-semibold text-gray-900">{t('donor_navigation.google_maps')}</p>
+                <p className="text-sm text-gray-500">{t('donor_navigation.full_gps')}</p>
               </div>
             </button>
 
@@ -452,8 +452,8 @@ export default function DonorNavigation() {
                 <Navigation className="w-6 h-6 text-purple-600" />
               </div>
               <div className="text-left">
-                <p className="font-semibold text-gray-900">Waze</p>
-                <p className="text-sm text-gray-500">Trafic en temps réel</p>
+                <p className="font-semibold text-gray-900">{t('donor_navigation.waze')}</p>
+                <p className="text-sm text-gray-500">{t('donor_navigation.realtime_traffic')}</p>
               </div>
             </button>
           </div>
@@ -461,7 +461,7 @@ export default function DonorNavigation() {
 
         {alert.contact_phone && (
           <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Contact hôpital</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-4">{t('donor_navigation.hospital_contact')}</h3>
             <a
               href={`tel:${alert.contact_phone}`}
               className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 transition-colors"
@@ -470,7 +470,7 @@ export default function DonorNavigation() {
                 <Phone className="w-6 h-6 text-green-600" />
               </div>
               <div>
-                <p className="font-semibold text-gray-900">Appeler l'hôpital</p>
+                <p className="font-semibold text-gray-900">{t('donor_navigation.call_hospital')}</p>
                 <p className="text-sm text-gray-500">{alert.contact_phone}</p>
               </div>
             </a>

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
 import LanguageSwitcher from '../components/LanguageSwitcher'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { hospital as hospitalApi } from '../services/api'
 import {
@@ -130,9 +130,29 @@ export default function HospitalDashboard() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { currentUser, logout, token, userType } = useApp()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [currentView, setCurrentView] = useState<'dashboard' | 'in_progress' | 'history' | 'stats' | 'settings'>('dashboard')
-  const [showAlertModal, setShowAlertModal] = useState(false)
-  const [showQRModal, setShowQRModal] = useState(false)
+  const showAlertModal = searchParams.get('modal') === 'alert'
+  const showQRModal = searchParams.get('modal') === 'qr'
+
+  const setShowAlertModal = (open: boolean) => {
+    if (open) {
+      searchParams.set('modal', 'alert')
+    } else {
+      searchParams.delete('modal')
+    }
+    setSearchParams(searchParams, { replace: true })
+  }
+
+  const setShowQRModal = (open: boolean) => {
+    if (open) {
+      searchParams.set('modal', 'qr')
+    } else {
+      searchParams.delete('modal')
+    }
+    setSearchParams(searchParams, { replace: true })
+  }
+
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [alertForm, setAlertForm] = useState({ bloodType: 'O-' as BloodType, quantity: '1', expiresIn: '2', message: '' })
   const [videoFile, setVideoFile] = useState<File | null>(null)
@@ -143,7 +163,7 @@ export default function HospitalDashboard() {
   const [responses, setResponses] = useState<AlertStatusResponseRow[]>([])
   const [qrDonorId, setQrDonorId] = useState<string | null>(null)
   const [manualDonorId, setManualDonorId] = useState('')
-  const [scannerStatus, setScannerStatus] = useState<string>('Initialisation caméra...')
+  const [scannerStatus, setScannerStatus] = useState<string>(() => t('hospital_dashboard.qr_modal.initializing'))
   const [scannerReady, setScannerReady] = useState(false)
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
@@ -337,23 +357,23 @@ export default function HospitalDashboard() {
       }
 
       if (!confirmationCode && !donorId) {
-        toast.error('QR invalide: code de confirmation introuvable')
+        toast.error(t('hospital_dashboard.qr_modal.qr_invalid'))
         return
       }
 
-      setScannerStatus('QR détecté, confirmation en cours...')
+      setScannerStatus(t('hospital_dashboard.qr_modal.qr_detected'))
       await hospitalApi.verifyDonor({
         alert_id: activeAlert.id,
         donor_id: donorId,
         confirmation_code: confirmationCode,
       })
-      toast.success('Arrivée du donneur confirmée via QR.')
+      toast.success(t('hospital_dashboard.qr_modal.qr_success'))
       setShowQRModal(false)
       setManualDonorId('')
       await refresh()
     } catch (err: unknown) {
-      toast.error((err as Error).message ?? 'Erreur de validation du QR')
-      setScannerStatus('Échec de confirmation QR, réessayez ou utilisez la saisie manuelle.')
+      toast.error((err as Error).message ?? t('hospital_dashboard.scan_error'))
+      setScannerStatus(t('hospital_dashboard.qr_modal.qr_error_confirm'))
     } finally {
       scanBusyRef.current = false
     }
@@ -369,7 +389,7 @@ export default function HospitalDashboard() {
     const start = async () => {
       try {
         if (!navigator.mediaDevices?.getUserMedia) {
-          setScannerStatus("Caméra non supportée, utilisez la saisie manuelle.")
+          setScannerStatus(t('hospital_dashboard.qr_modal.camera_unsupported'))
           return
         }
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -394,7 +414,7 @@ export default function HospitalDashboard() {
         }
 
         const detector = new BarcodeDetectorCtor({ formats: ['qr_code'] })
-        setScannerStatus('Pointez vers le QR code du donneur...')
+        setScannerStatus(t('hospital_dashboard.qr_modal.point_to_qr'))
 
         const tick = async () => {
           if (cancelled || !videoRef.current) return
@@ -414,7 +434,7 @@ export default function HospitalDashboard() {
         }
         scanRafRef.current = requestAnimationFrame(tick)
       } catch {
-        setScannerStatus("Impossible d'accéder à la caméra, utilisez la saisie manuelle.")
+        setScannerStatus(t('hospital_dashboard.qr_modal.camera_error'))
       }
     }
 
@@ -816,24 +836,33 @@ export default function HospitalDashboard() {
                       <h3 className="font-bold text-gray-900">{t('hospital_dashboard.donor_position')}</h3>
                       <p className="text-xs text-gray-500 mt-1">{t('hospital_dashboard.auto_update')}</p>
                     </div>
-                    <div className="h-[520px]">
-                      <MapContainer
-                        center={[
-                          Number(
-                            currentUser?.latitude ??
-                              donorsWithValidCoords[0]?.latitude ??
-                              33.5731,
-                          ),
-                          Number(
-                            currentUser?.longitude ??
-                              donorsWithValidCoords[0]?.longitude ??
-                              -7.5898,
-                          ),
-                        ]}
-                        zoom={12}
-                        scrollWheelZoom
-                        className="h-full w-full"
-                      >
+                    <div className="h-[520px] relative bg-slate-50 flex items-center justify-center">
+                      {responses.length === 0 ? (
+                        <div className="text-center p-6 max-w-sm">
+                          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <MapPin className="w-8 h-8 text-blue-500" />
+                          </div>
+                          <h4 className="text-lg font-semibold text-slate-900 mb-2">{t('hospital_dashboard.no_donor_responded')}</h4>
+                          <p className="text-sm text-slate-500">{t('hospital_dashboard.in_progress_desc')}</p>
+                        </div>
+                      ) : (
+                        <MapContainer
+                          center={[
+                            Number(
+                              currentUser?.latitude ??
+                                donorsWithValidCoords[0]?.latitude ??
+                                33.5731,
+                            ),
+                            Number(
+                              currentUser?.longitude ??
+                                donorsWithValidCoords[0]?.longitude ??
+                                -7.5898,
+                            ),
+                          ]}
+                          zoom={12}
+                          scrollWheelZoom
+                          className="h-full w-full"
+                        >
                         <TileLayer
                           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -890,6 +919,7 @@ export default function HospitalDashboard() {
                           )
                         })}
                       </MapContainer>
+                      )}
                     </div>
                   </div>
                 </div>

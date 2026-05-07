@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import {
   ArrowLeft,
   ArrowRight,
-  Building2,
+  Droplets,
   CheckCircle2,
   FileText,
   LoaderCircle,
@@ -426,10 +426,10 @@ export default function HospitalRegistration() {
         <aside className='w-full rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur lg:max-w-sm'>
           <div className='mb-8 flex items-center gap-3'>
             <div className='rounded-2xl bg-red-500/15 p-3 text-red-300'>
-              <Building2 className='h-6 w-6' />
+              <Droplets className='h-6 w-6' />
             </div>
             <div>
-              <p className='text-sm font-medium text-red-300'>Urgence Sang</p>
+              <p className='text-sm font-medium text-red-300'>Urgence-Sang</p>
               <h1 className='text-2xl font-semibold'>Inscription hôpital</h1>
             </div>
           </div>

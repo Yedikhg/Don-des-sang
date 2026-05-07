@@ -343,6 +343,7 @@ const fr = {
       stats_title: 'Statistiques détaillées',
       stats_desc: 'Analyse approfondie de votre activité',
       total_donations: 'Total dons',
+      alerts_received_count: 'Nombre d\'alertes reçues',
       accepted_responses: 'Réponses acceptées',
       declined_responses: 'Réponses refusées',
       lives_impacted: 'Vies impactées',
@@ -489,7 +490,15 @@ const fr = {
         manual_validation: 'Validation manuelle :',
         confirm_without_scan: 'Confirmer sans scanner (identifiant ou code)',
         confirm: 'Confirmer',
-        id_placeholder: 'ex: 15f6aa3f-... ou 9A3F1C2D'
+        id_placeholder: 'ex: 15f6aa3f-... ou 9A3F1C2D',
+        camera_error: 'Impossible d\'accéder à la caméra (vérifiez les permissions). Utilisez la saisie manuelle.',
+        camera_unsupported: 'Caméra non supportée par votre navigateur. Utilisez la saisie manuelle.',
+        point_to_qr: 'Pointez vers le QR code du donneur...',
+        initializing: 'Initialisation caméra...',
+        qr_detected: 'QR détecté, confirmation en cours...',
+        qr_invalid: 'QR invalide: code de confirmation introuvable',
+        qr_success: 'Arrivée du donneur confirmée via QR.',
+        qr_error_confirm: 'Échec de confirmation QR, réessayez ou utilisez la saisie manuelle.'
       }
     },
     donor_nearby_alerts: {
@@ -939,6 +948,7 @@ const en = {
       stats_title: 'Detailed statistics',
       stats_desc: 'In-depth analysis of your activity',
       total_donations: 'Total donations',
+      alerts_received_count: 'Number of alerts received',
       accepted_responses: 'Accepted responses',
       declined_responses: 'Declined responses',
       lives_impacted: 'Lives impacted',
@@ -1078,7 +1088,15 @@ const en = {
         manual_validation: 'Manual validation:',
         confirm_without_scan: 'Confirm without scanning (ID or code)',
         confirm: 'Confirm',
-        id_placeholder: 'ex: 15f6aa3f-... or 9A3F1C2D'
+        id_placeholder: 'ex: 15f6aa3f-... or 9A3F1C2D',
+        camera_error: 'Unable to access camera (check permissions). Use manual entry.',
+        camera_unsupported: 'Camera not supported by your browser. Use manual entry.',
+        point_to_qr: 'Point to the donor\'s QR code...',
+        initializing: 'Initializing camera...',
+        qr_detected: 'QR detected, confirming...',
+        qr_invalid: 'Invalid QR: confirmation code not found',
+        qr_success: 'Donor arrival confirmed via QR.',
+        qr_error_confirm: 'QR confirmation failed, try again or use manual entry.'
       },
       kpi: {
         alerts: 'Alerts this month',

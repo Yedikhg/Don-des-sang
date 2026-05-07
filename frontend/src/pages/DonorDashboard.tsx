@@ -420,10 +420,10 @@ export default function DonorDashboard() {
                 {[
                   { 
                     label: t('donor_dashboard.kpi.donations'), 
-                    value: stats?.donation_count ?? 0, 
+                    value: stats?.completed_donations ?? 0, 
                     icon: HeartPulse, 
-                    color: stats?.donation_count ? 'text-red-600' : 'text-gray-600',
-                    bg: stats?.donation_count ? 'bg-red-50' : 'bg-gray-50'
+                    color: stats?.completed_donations ? 'text-red-600' : 'text-gray-600',
+                    bg: stats?.completed_donations ? 'bg-red-50' : 'bg-gray-50'
                   },
                   { 
                     label: t('donor_dashboard.kpi.impact'), 

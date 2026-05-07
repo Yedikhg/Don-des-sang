@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'sonner'
 import { AppProvider } from './context/AppContext'
 import Navbar from './components/Navbar'
@@ -28,6 +28,8 @@ function App() {
               </>
             }
           />
+          <Route path="/register/donor" element={<Navigate to="/donor/register" replace />} />
+          <Route path="/register/hospital" element={<Navigate to="/hospital/register" replace />} />
           <Route
             path="/hospital/register"
             element={

@@ -71,6 +71,7 @@ function getEmergencyMeta(level: string | undefined) {
 }
 
 export default function CriticalAlertPage() {
+  const { t } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
   const { currentUser } = useApp()
