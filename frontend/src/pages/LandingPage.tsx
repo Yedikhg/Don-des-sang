@@ -134,7 +134,7 @@ export default function LandingPage() {
               className="text-[clamp(2.3rem,8.2vw,6.25rem)] font-black leading-[1.02] tracking-tight text-white"
               style={{ fontVariantNumeric: 'tabular-nums' }}
             >
-              URGENCE
+              Urgence
             </motion.h1>
           </div>
           <div className="overflow-hidden mb-10">
@@ -144,7 +144,7 @@ export default function LandingPage() {
               transition={{ duration: 0.9, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
               className="text-[clamp(2.3rem,8.2vw,6.25rem)] font-black leading-[1.02] tracking-tight text-rose-500"
             >
-              SANG
+              -Sang
             </motion.h1>
           </div>
 
@@ -383,12 +383,12 @@ export default function LandingPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.12 }}
-                className="border border-zinc-800 p-8 hover:border-zinc-700 transition-colors"
+                className="flex flex-col border border-zinc-800 p-8 hover:border-zinc-700 transition-colors rounded-lg"
               >
                 <div className="text-rose-600 text-3xl font-serif leading-none mb-6">"</div>
-                <p className="text-zinc-300 text-sm leading-relaxed mb-8 italic">{t.quote}"</p>
-                <div className="flex items-center gap-4 border-t border-zinc-800 pt-6">
-                  <div className="w-9 h-9 bg-rose-600/20 border border-rose-600/30 flex items-center justify-center text-rose-400 text-xs font-bold shrink-0">
+                <p className="text-zinc-300 text-sm leading-relaxed flex-1 italic">{t.quote}"</p>
+                <div className="flex items-center gap-4 border-t border-zinc-800 pt-6 mt-8">
+                  <div className="w-9 h-9 bg-rose-600/20 border border-rose-600/30 rounded-lg flex items-center justify-center text-rose-400 text-xs font-bold shrink-0">
                     {t.initials}
                   </div>
                   <div>

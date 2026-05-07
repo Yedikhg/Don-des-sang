@@ -6,22 +6,22 @@ const fr = {
   translation: {
     navbar: {
       how_it_works: 'Comment ça marche',
-      impact: 'Impact',
+      impact: 'Notre impact',
       login: 'Connexion',
       logout: 'Déconnexion',
-      dashboard: 'Dashboard',
+      dashboard: 'Tableau de bord',
       language: 'FR'
     },
     landing: {
-      hackathon: 'Hackathon GNEC 2026 — ODD 3',
+      hackathon: 'Projet GNEC 2026 — ODD 3',
       hero_title: 'Chaque goutte compte. Sauvez une vie aujourd\'hui.',
       hero_subtitle: 'Urgence-Sang connecte instantanément les donneurs de sang avec les hôpitaux en situation d\'urgence grâce à une IA intelligente.',
-      become_donor: 'Devenir Donneur',
-      hospital_access: 'Accès Hôpital',
+      become_donor: 'S\'inscrire comme donneur',
+      hospital_access: 'Espace établissement',
       verified_hospitals: 'Hôpitaux vérifiés',
       realtime_matching: 'Matching en temps réel',
       measurable_impact: 'Impact mesurable',
-      scroll: 'Scroll',
+      scroll: 'Défiler',
       stats: {
         lives_saved: 'Vies sauvées',
         partner_hospitals: 'Hôpitaux partenaires',
@@ -30,7 +30,7 @@ const fr = {
       },
       how_it_works: {
         process: 'Processus',
-        how_it_works_title: 'COMMENT<br />ÇA MARCHE',
+        how_it_works_title: 'COMMENT<br />ÇA FONCTIONNE',
         description: 'De l\'alerte critique au don effectif, un processus optimisé par l\'IA en moins de 15 minutes.',
         steps: [
           {
@@ -94,8 +94,8 @@ const fr = {
         subtitle: 'Rejoindre le réseau',
         title: 'PRÊT À SAUVER',
         title_2: 'DES VIES ?',
-        become_donor: 'Je deviens donneur',
-        register_hospital: 'Enregistrer mon hôpital'
+        become_donor: 'S\'inscrire comme donneur',
+        register_hospital: 'Inscrire mon établissement'
       },
       footer: {
         copyright: '© 2026 Urgence-Sang — Projet GNEC 2026 · ODD 3 · Fait pour sauver des vies',
@@ -121,8 +121,8 @@ const fr = {
       invalid_credentials: 'Email ou mot de passe incorrect'
     },
     donor_registration: {
-      title: 'Devenir Donneur',
-      subtitle: 'Créez votre profil héros en 3 étapes',
+      title: 'S\'inscrire au réseau de donneurs',
+      subtitle: 'Créez votre profil en 3 étapes simples',
       steps: {
         profile: 'Profil',
         blood_type: 'Groupe sanguin',
@@ -361,6 +361,7 @@ const fr = {
       notifications: 'Notifications',
       emergency_alerts: 'Alertes d\'urgence',
       emergency_alerts_desc: 'Recevoir les alertes critiques par notification',
+      email_notifications: 'Notifications par email',
       email_notifications_desc: 'Recevoir un résumé par email',
       donation_reminders: 'Rappels de don',
       donation_reminders_desc: 'Être notifié quand vous êtes éligible'
@@ -433,7 +434,7 @@ const fr = {
       address: 'Adresse',
       phone: 'Téléphone',
       email: 'Email',
-      save: 'Enregistrer',
+      save: 'Enregistrer les modifications',
       notifications: 'Notifications',
       email_notifications: 'Notifications par email',
       email_notifications_desc: 'Recevoir les alertes par email',
@@ -473,7 +474,7 @@ const fr = {
         quantity_label: 'Nombre de poches',
         duration_label: 'Expiration de l\'alerte',
         message_label: 'Message d\'urgence',
-        message_placeholder: 'ex: Patient en chirurgie...',
+        message_placeholder: 'Décrivez la situation (ex: Patient en chirurgie urgente nécessitant une transfusion immédiate)',
         video_label: 'Vidéo (15-30s)',
         video_ready: 'Vidéo prête',
         video_upload: 'Uploader une vidéo',
@@ -482,6 +483,13 @@ const fr = {
         launching: 'Envoi...',
         hour: 'heure',
         hours: 'heures'
+      },
+      qr_modal: {
+        title: 'Scanner le QR code du donneur',
+        manual_validation: 'Validation manuelle :',
+        confirm_without_scan: 'Confirmer sans scanner (identifiant ou code)',
+        confirm: 'Confirmer',
+        id_placeholder: 'ex: 15f6aa3f-... ou 9A3F1C2D'
       }
     },
     donor_nearby_alerts: {
@@ -604,8 +612,8 @@ const en = {
       hackathon: 'Hackathon GNEC 2026 — SDG 3',
       hero_title: 'Every drop counts. Save a life today.',
       hero_subtitle: 'Urgence-Sang instantly connects blood donors with hospitals in emergency situations using smart AI.',
-      become_donor: 'Become a Donor',
-      hospital_access: 'Hospital Access',
+      become_donor: 'Register as a Donor',
+      hospital_access: 'Hospital Space',
       verified_hospitals: 'Verified Hospitals',
       realtime_matching: 'Real-time Matching',
       measurable_impact: 'Measurable Impact',
@@ -682,8 +690,8 @@ const en = {
         subtitle: 'Join the network',
         title: 'READY TO SAVE',
         title_2: 'LIVES?',
-        become_donor: 'I become a donor',
-        register_hospital: 'Register my hospital'
+        become_donor: 'Register as a Donor',
+        register_hospital: 'Register my establishment'
       },
       footer: {
         copyright: '© 2026 Urgence-Sang — GNEC 2026 Project · SDG 3 · Made to save lives',
@@ -709,8 +717,8 @@ const en = {
       invalid_credentials: 'Invalid email or password'
     },
     donor_registration: {
-      title: 'Become a Donor',
-      subtitle: 'Create your hero profile in 3 steps',
+      title: 'Join the Donor Network',
+      subtitle: 'Create your profile in 3 simple steps',
       steps: {
         profile: 'Profile',
         blood_type: 'Blood Type',
@@ -1064,6 +1072,13 @@ const en = {
         launching: 'Sending...',
         hour: 'hour',
         hours: 'hours'
+      },
+      qr_modal: {
+        title: 'Scan donor QR code',
+        manual_validation: 'Manual validation:',
+        confirm_without_scan: 'Confirm without scanning (ID or code)',
+        confirm: 'Confirm',
+        id_placeholder: 'ex: 15f6aa3f-... or 9A3F1C2D'
       },
       kpi: {
         alerts: 'Alerts this month',

@@ -737,8 +737,8 @@ export default function HospitalDashboard() {
                               {alert.blood_type}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-gray-700 truncate">{alert.id.slice(0, 8)}...</p>
-                              <p className="text-xs text-gray-500">{alert.quantity_units} {t('hospital_dashboard.pouches')}</p>
+                              <p className="text-sm font-medium text-gray-700 truncate">Alerte {alert.blood_type}</p>
+                              <p className="text-xs text-gray-500">{alert.quantity_units} {t('hospital_dashboard.pouches')} — {alert.created_at ? new Date(alert.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }) : ''}</p>
                             </div>
                             {alert.status === 'completed' ? (
                               <CheckCircle className="w-4 h-4 text-emerald-500" />
@@ -956,7 +956,7 @@ export default function HospitalDashboard() {
                                 </span>
                               )}
                             </td>
-                            <td className="px-6 py-4 text-xs text-gray-500 font-mono">{alert.id.slice(0, 8)}...</td>
+                            <td className="px-6 py-4 text-xs text-gray-500 font-mono">#{alert.id.slice(0, 6).toUpperCase()}</td>
                           </tr>
                         ))
                       )}
@@ -1095,7 +1095,7 @@ export default function HospitalDashboard() {
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" className="sr-only peer" defaultChecked />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                       </label>
                     </div>
                   ))}
@@ -1270,7 +1270,7 @@ export default function HospitalDashboard() {
               <div className="flex items-center justify-between p-4 border-b border-slate-800">
                 <div className="flex items-center gap-2 text-white">
                   <QrCode className="w-5 h-5" />
-                  <h3 className="font-bold">Scanner QR Code Donneur</h3>
+                  <h3 className="font-bold">{t('hospital_dashboard.qr_modal.title')}</h3>
                 </div>
                 <button onClick={() => setShowQRModal(false)} className="text-slate-400 hover:text-white">
                   <X className="w-5 h-5" />
@@ -1298,7 +1298,7 @@ export default function HospitalDashboard() {
 
               {/* Simulate scan buttons */}
               <div className="p-4 space-y-2">
-                <p className="text-slate-400 text-xs text-center mb-3">Simuler une validation manuelle :</p>
+                <p className="text-slate-400 text-xs text-center mb-3">{t('hospital_dashboard.qr_modal.manual_validation')}</p>
                 {responses.filter(d => d.status !== 'completed').map((d) => (
                   <button
                     key={d.donor_id}
@@ -1316,21 +1316,21 @@ export default function HospitalDashboard() {
                 {/* Explicit manual fallback without QR scan */}
                 <div className="pt-3 border-t border-slate-800 mt-3">
                   <p className="text-slate-400 text-xs mb-2">
-                    Confirmer sans scanner (ID donneur ou code)
+                    {t('hospital_dashboard.qr_modal.confirm_without_scan')}
                   </p>
                   <div className="flex gap-2">
                     <input
                       type="text"
                       value={manualDonorId}
                       onChange={(e) => setManualDonorId(e.target.value)}
-                      placeholder="ex: 15f6aa3f-... ou 9A3F1C2D"
+                      placeholder={t('hospital_dashboard.qr_modal.id_placeholder')}
                       className="flex-1 px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-rose-500"
                     />
                     <button
                       onClick={() => void handleManualVerify()}
                       className="px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold"
                     >
-                      Confirmer
+                      {t('hospital_dashboard.qr_modal.confirm')}
                     </button>
                   </div>
                 </div>
