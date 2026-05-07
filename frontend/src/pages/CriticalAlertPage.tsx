@@ -10,12 +10,16 @@ import {
   Phone,
   ShieldAlert,
   XCircle,
+  Send,
+  User,
+  Bot,
 } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useRef } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
+import { useTranslation } from 'react-i18next'
 import { useApp } from '../context/AppContext'
-import { donor as donorApi, type DonorAlertDetail } from '../services/api'
+import { donor as donorApi, ai as aiApi, type DonorAlertDetail, type ChatMessage } from '../services/api'
 import { pushDonorGpsToServer } from '../lib/donorLocationSync'
 
 const demoAlert: DonorAlertDetail = {
@@ -83,6 +87,13 @@ export default function CriticalAlertPage() {
   const [accepted, setAccepted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [confirmationCode, setConfirmationCode] = useState<string | null>(null)
+  
+  const [showHealthVerification, setShowHealthVerification] = useState(false)
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
+  const [chatInput, setChatInput] = useState('')
+  const [chatLoading, setChatLoading] = useState(false)
+  const [isEligible, setIsEligible] = useState<boolean | null>(null)
+  const chatEndRef = useRef<HTMLDivElement>(null)
 
   const emergencyMeta = useMemo(() => getEmergencyMeta(alert?.emergency_level), [alert?.emergency_level])
 
@@ -171,6 +182,53 @@ export default function CriticalAlertPage() {
       setSubmitting(false)
     }
   }
+
+  async function startHealthVerification() {
+    setShowHealthVerification(true)
+    setChatMessages([])
+    setIsEligible(null)
+    
+    setChatLoading(true)
+    try {
+      const donorName = currentUser?.first_name || 'Donneur'
+      const bloodType = currentUser?.blood_type || ''
+      const response = await aiApi.chat('Bonjour, je veux donner du sang.', [], donorName, bloodType)
+      setChatMessages([{ role: 'assistant', content: response.reply }])
+      setIsEligible(response.eligible)
+    } catch (err) {
+      toast.error('Impossible de lancer la vérification santé')
+    } finally {
+      setChatLoading(false)
+    }
+  }
+
+  async function sendChatMessage() {
+    if (!chatInput.trim() || chatLoading) return
+
+    const userMessage = chatInput.trim()
+    setChatInput('')
+    
+    const newMessages = [...chatMessages, { role: 'user', content: userMessage } as ChatMessage]
+    setChatMessages(newMessages)
+    setChatLoading(true)
+
+    try {
+      const donorName = currentUser?.first_name || 'Donneur'
+      const bloodType = currentUser?.blood_type || ''
+      const response = await aiApi.chat(userMessage, newMessages, donorName, bloodType)
+      const finalMessages = [...newMessages, { role: 'assistant', content: response.reply } as ChatMessage]
+      setChatMessages(finalMessages)
+      setIsEligible(response.eligible)
+    } catch (err) {
+      toast.error('Erreur lors de la vérification santé')
+    } finally {
+      setChatLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [chatMessages, chatLoading])
 
   async function handleDecline() {
     if (!id || submitting) {
@@ -465,42 +523,131 @@ export default function CriticalAlertPage() {
             </div>
           </article>
 
-          <article className='rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-sm'>
-            <h2 className='text-xl font-extrabold text-gray-900'>Votre décision</h2>
-            <p className='mt-3 text-sm text-gray-500 leading-relaxed'>
-              Merci d’indiquer si vous pouvez vous rendre à l’hôpital dans les meilleurs délais.
-            </p>
-
-            <div className='mt-8 space-y-4'>
-              <button
-                type='button'
-                onClick={() => void handleAccept()}
-                disabled={submitting}
-                className='flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-4 text-base font-bold text-white transition-all shadow-md hover:bg-emerald-700 hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:opacity-60'
-              >
-                {submitting ? <LoaderCircle className='h-5 w-5 animate-spin' /> : <CheckCircle2 className='h-5 w-5' />}
-                Accepter l’alerte
-              </button>
-
-              <button
-                type='button'
-                onClick={() => void handleDecline()}
-                disabled={submitting}
-                className='flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-4 text-base font-bold text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:text-red-600 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60'
-              >
-                {submitting ? <LoaderCircle className='h-5 w-5 animate-spin' /> : <XCircle className='h-5 w-5' />}
-                Refuser l’alerte
-              </button>
-            </div>
-
-            <div className='mt-6 rounded-lg bg-blue-50 p-4 border border-blue-100'>
-              <p className='text-xs leading-relaxed text-blue-700'>
-                {isDemo
-                  ? 'Mode démo : ces actions n’appellent pas le backend.'
-                  : 'Mode réel : votre action est enregistrée via l’API avant la confirmation ou la redirection.'}
+          {!showHealthVerification ? (
+            <article className='rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-sm'>
+              <h2 className='text-xl font-extrabold text-gray-900'>Vérification Santé</h2>
+              <p className='mt-3 text-sm text-gray-500 leading-relaxed'>
+                Pour votre sécurité et celle du receveur, veuillez d’abord effectuer une vérification rapide de votre aptitude à donner.
               </p>
-            </div>
-          </article>
+
+              <div className='mt-8 space-y-4'>
+                <button
+                  type='button'
+                  onClick={() => void startHealthVerification()}
+                  className='flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-4 text-base font-bold text-white transition-all shadow-md hover:bg-blue-700 hover:shadow-lg active:scale-95'
+                >
+                  <HeartPulse className='h-5 w-5' />
+                  Commencer la vérification
+                </button>
+
+                <button
+                  type='button'
+                  onClick={() => void handleDecline()}
+                  disabled={submitting}
+                  className='flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-4 text-base font-bold text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:text-red-600 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60'
+                >
+                  {submitting ? <LoaderCircle className='h-5 w-5 animate-spin' /> : <XCircle className='h-5 w-5' />}
+                  Refuser l’alerte
+                </button>
+              </div>
+
+              <div className='mt-6 rounded-lg bg-blue-50 p-4 border border-blue-100'>
+                <p className='text-xs leading-relaxed text-blue-700'>
+                  Cette vérification rapide ne remplace pas un examen médical professionnel, mais garantit votre sécurité.
+                </p>
+              </div>
+            </article>
+          ) : (
+            <article className='rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-sm'>
+              <h2 className='text-xl font-extrabold text-gray-900'>Vérification Santé par IA</h2>
+              <p className='mt-3 text-sm text-gray-500 leading-relaxed'>
+                Répondez aux questions pour confirmer votre aptitude à donner.
+              </p>
+
+              <div className='mt-6 h-80 overflow-y-auto border border-gray-100 rounded-xl bg-gray-50 p-4'>
+                {chatMessages.map((msg, index) => (
+                  <div key={index} className={`mb-4 flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`flex items-start gap-3 max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-blue-500 text-white' : 'bg-red-500 text-white'}`}>
+                        {msg.role === 'user' ? <User className='w-4 h-4' /> : <Bot className='w-4 h-4' />}
+                      </div>
+                      <div className={`p-3 rounded-xl ${msg.role === 'user' ? 'bg-blue-600 text-white rounded-br-sm' : 'bg-white text-gray-800 border border-gray-100 rounded-bl-sm'}`}>
+                        <p className='text-sm leading-relaxed'>{msg.content}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {chatLoading && (
+                  <div className='flex gap-3 justify-start mb-4'>
+                    <div className='flex items-start gap-3 max-w-[85%] flex-row'>
+                      <div className='w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center shrink-0'>
+                        <Bot className='w-4 h-4' />
+                      </div>
+                      <div className='p-3 rounded-xl bg-white text-gray-800 border border-gray-100 rounded-bl-sm'>
+                        <LoaderCircle className='h-4 w-4 animate-spin' />
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <div ref={chatEndRef} />
+              </div>
+
+              {isEligible === null && (
+                <div className='mt-4 flex gap-2'>
+                  <input
+                    type='text'
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && sendChatMessage()}
+                    placeholder='Répondez à la question...'
+                    className='flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none'
+                    disabled={chatLoading}
+                  />
+                  <button
+                    type='button'
+                    onClick={sendChatMessage}
+                    disabled={chatLoading || !chatInput.trim()}
+                    className='px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed'
+                  >
+                    <Send className='w-5 h-5' />
+                  </button>
+                </div>
+              )}
+
+              {isEligible !== null && (
+                <div className='mt-6 space-y-4'>
+                  <div className={`p-4 rounded-xl border ${isEligible ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}`}>
+                    <p className={`text-sm font-semibold ${isEligible ? 'text-emerald-800' : 'text-red-800'}`}>
+                      {isEligible 
+                        ? '✅ Vous êtes éligible pour donner !' 
+                        : '❌ Malheureusement, vous n’êtes pas éligible pour le moment.'}
+                    </p>
+                  </div>
+
+                  {isEligible ? (
+                    <button
+                      type='button'
+                      onClick={() => void handleAccept()}
+                      disabled={submitting}
+                      className='flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-4 text-base font-bold text-white transition-all shadow-md hover:bg-emerald-700 hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:opacity-60'
+                    >
+                      {submitting ? <LoaderCircle className='h-5 w-5 animate-spin' /> : <CheckCircle2 className='h-5 w-5' />}
+                      Accepter l’alerte
+                    </button>
+                  ) : (
+                    <button
+                      type='button'
+                      onClick={() => navigate('/donor/dashboard')}
+                      className='flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-4 text-base font-bold text-gray-700 shadow-sm transition-all hover:bg-gray-50 active:scale-95'
+                    >
+                      <ArrowLeft className='h-5 w-5' />
+                      Retour au tableau de bord
+                    </button>
+                  )}
+                </div>
+              )}
+            </article>
+          )}
         </section>
       </div>
     </div>
