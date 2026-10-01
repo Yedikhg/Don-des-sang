@@ -34,7 +34,7 @@ Ce fichier documente l'architecture de déploiement du projet pour faciliter le 
 
 ## 4. Base de Données (PostgreSQL)
 - **Hébergeur** : Supabase
-- **URL de connexion** : `postgresql://postgres.mgahifazpiztrcfxusoe:yedidyaa230385@aws-0-eu-west-1.pooler.supabase.com:6543/postgres`
+- **URL de connexion** : [identifiants retirés — configure la connexion dans les variables d’environnement du service]
 - **Accès** : Géré via les variables d'environnement du Backend (`DATABASE_URL`, `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`).
 - **Comment modifier** : Les modifications de schéma se font directement via l'interface web de Supabase ou via des scripts SQL exécutés sur cette base.
 
