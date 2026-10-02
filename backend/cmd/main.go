@@ -38,7 +38,7 @@ func main() {
 	}))
 	// CORS FIX - Allow all origins for development and production
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "*",
+		AllowOrigins:     "https://urgence-sang-web.onrender.com,https://blood-emergency-azure.vercel.app,https://blood-emergency-yedikhgs-projects.vercel.app,https://blood-emergency-git-main-yedikhgs-projects.vercel.app,https://don-des-sang.vercel.app,https://don-des-sang-git-main-yedikhgs-projects.vercel.app,http://localhost:5173",
 		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
 		AllowMethods:     "GET, POST, PUT, PATCH, DELETE, OPTIONS",
 		AllowCredentials: true,
