@@ -70,9 +70,25 @@ export default function DonorDashboard() {
   const [history, setHistory] = useState<DonorHistoryItem[]>([])
   const [loading, setLoading] = useState(true)
   const [activeDonationAlertId, setActiveDonationAlertId] = useState<string | null>(null)
-  const [notificationSettings, setNotificationSettings] = useState(() => {
+  const [notificationSettings, setNotificationSettings] = useState<{
+    alerts: boolean
+    email: boolean
+    reminders: boolean
+  }>(() => {
+    const defaults = { alerts: true, email: true, reminders: true }
     const saved = localStorage.getItem('donor_notifications')
-    return saved ? JSON.parse(saved) : { alerts: true, email: true, reminders: true }
+    if (!saved) return defaults
+
+    try {
+      const parsed = JSON.parse(saved) as Partial<typeof defaults>
+      return {
+        alerts: parsed.alerts ?? defaults.alerts,
+        email: parsed.email ?? defaults.email,
+        reminders: parsed.reminders ?? defaults.reminders,
+      }
+    } catch {
+      return defaults
+    }
   })
 
   const toggleNotification = (key: 'alerts' | 'email' | 'reminders') => {
@@ -754,8 +770,8 @@ export default function DonorDashboard() {
                         <input 
                           type="checkbox" 
                           className="sr-only peer" 
-                          checked={notificationSettings[item.key as keyof typeof notificationSettings]} 
-                          onChange={() => toggleNotification(item.key as keyof typeof notificationSettings)} 
+                          checked={notificationSettings[item.key as 'alerts' | 'email' | 'reminders']} 
+                          onChange={() => toggleNotification(item.key as 'alerts' | 'email' | 'reminders')} 
                         />
                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                       </label>
