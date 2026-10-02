@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { donor as donorApi, normalizeDonorAlertDetail, type DonorAlertDetail } from '../services/api'
