@@ -1,0 +1,30 @@
+name: Backend checks
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-checks.yml'
+  pull_request:
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-checks.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  database-and-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: backend/go.mod
+          cache-dependency-path: backend/go.sum
+      - run: go test ./internal/database
+      - run: go build -o /tmp/urgence-sang-api ./cmd/main.go

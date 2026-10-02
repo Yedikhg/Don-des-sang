@@ -1,7 +1,9 @@
 package main
 
 import (
+	"context"
 	"log"
+	"time"
 
 	"urgence-sang/internal/auth"
 	"urgence-sang/internal/config"
@@ -36,7 +38,7 @@ func main() {
 	app.Use(logger.New(logger.Config{
 		Format: "[${time}] ${status} ${method} ${path} ${latency}\n",
 	}))
-	// CORS FIX - Allow all origins for development and production
+	// Autoriser les interfaces déployées et le développement local.
 	app.Use(cors.New(cors.Config{
 		AllowOrigins:     "https://urgence-sang-web.onrender.com,https://blood-emergency-azure.vercel.app,https://blood-emergency-yedikhgs-projects.vercel.app,https://blood-emergency-git-main-yedikhgs-projects.vercel.app,https://don-des-sang.vercel.app,https://don-des-sang-git-main-yedikhgs-projects.vercel.app,http://localhost:5173",
 		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
@@ -45,12 +47,18 @@ func main() {
 	}))
 
 	app.Get("/health", func(c *fiber.Ctx) error {
+		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+		defer cancel()
+		status := "ok"
+		code := fiber.StatusOK
 		dbStatus := "connected"
-		if database.DB == nil {
-			dbStatus = "not connected (set DATABASE_URL in .env)"
+		if !database.Ready(ctx) {
+			status = "degraded"
+			code = fiber.StatusServiceUnavailable
+			dbStatus = "not connected"
 		}
-		return c.JSON(fiber.Map{
-			"status":   "ok",
+		return c.Status(code).JSON(fiber.Map{
+			"status":   status,
 			"service":  "urgence-sang-api",
 			"version":  "1.0.0",
 			"database": dbStatus,

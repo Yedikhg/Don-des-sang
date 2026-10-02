@@ -1,9 +1,11 @@
 package database
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"log"
+	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -11,16 +13,24 @@ import (
 var DB *sql.DB
 
 func Connect(databaseURL string) error {
-	var err error
-	DB, err = sql.Open("postgres", databaseURL)
+	db, err := sql.Open("postgres", databaseURL)
 	if err != nil {
 		return fmt.Errorf("error opening database: %w", err)
 	}
-	if err = DB.Ping(); err != nil {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	if err = db.PingContext(ctx); err != nil {
+		_ = db.Close()
 		return fmt.Errorf("error connecting to database: %w", err)
 	}
-	DB.SetMaxOpenConns(25)
-	DB.SetMaxIdleConns(5)
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(2)
+	db.SetConnMaxLifetime(5 * time.Minute)
+	DB = db
 	log.Println("✅ Database connected successfully")
 	return nil
+}
+
+func Ready(ctx context.Context) bool {
+	return DB != nil && DB.PingContext(ctx) == nil
 }
