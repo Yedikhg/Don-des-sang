@@ -17,6 +17,7 @@ import {
 const ACTIVE_DONATION_KEY = 'active_donation_context'
 
 export default function DonorNearbyAlerts() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [alerts, setAlerts] = useState<DonorAlert[]>([])
   const [loading, setLoading] = useState(true)
