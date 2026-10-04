@@ -18,6 +18,10 @@ function App() {
     <AppProvider>
       <BrowserRouter>
         <Toaster position="top-right" richColors closeButton />
+        <aside role="note" className="fixed bottom-0 left-0 right-0 z-[100] bg-amber-100 px-4 py-2 text-center text-sm text-amber-950">
+          Démonstration — données fictives uniquement. Ne pas utiliser pour une urgence médicale réelle.
+        </aside>
+        <div className="pb-16">
         <Routes>
           <Route
             path="/"
@@ -99,6 +103,7 @@ function App() {
             }
           />
         </Routes>
+        </div>
       </BrowserRouter>
     </AppProvider>
   )

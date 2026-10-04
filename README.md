@@ -2,6 +2,15 @@
 
 Urgence-Sang est une plateforme communautaire de mise en relation entre hopitaux et donneurs de sang en situation d urgence. Le projet combine un frontend web moderne, une API backend en Go, un microservice IA en Python et une base de donnees PostgreSQL/PostGIS pour accelerer la recherche de donneurs compatibles et proches geographiquement.
 
+## Application en ligne
+
+- **Interface :** https://urgence-sang-web.onrender.com
+- **API :** https://urgence-sang-api.onrender.com/health
+
+Démonstration publique : utiliser uniquement des données fictives. Le parcours inscription, connexion, alerte compatible à proximité, réponse, confirmation par l’hôpital et historique a été testé sur le serveur déployé. Ce site ne doit pas servir à traiter une urgence médicale réelle : la validation administrative des hôpitaux, les notifications Firebase et le microservice IA distant ne sont pas opérationnels dans cette démonstration.
+
+Les services gratuits peuvent redémarrer lentement après inactivité. La base gratuite actuelle expire le **31 octobre 2026** ; conserver le service après cette date exige une sauvegarde et une migration ou un renouvellement.
+
 ## Vision du projet
 
 L objectif du projet est simple : reduire le temps entre le signalement d un besoin critique en sang et la mobilisation de donneurs disponibles.
@@ -220,66 +229,21 @@ cp .env.example .env
 python app.py
 ```
 
-## Strategie de deploiement gratuite
+## Déploiement Render actuel
 
-Pour le backend principal, je recommande de deployer sur **Oracle Cloud Always Free**.
+L’interface et l’API sont hébergées sur Render et se redéploient depuis la branche `main`.
 
-### Pourquoi ce choix
+- Construction de l’API : `cd backend && mkdir -p bin && go build -o bin/api ./cmd/main.go`
+- Démarrage : `cd backend && ./bin/api`
+- Interface : `cd frontend && npm install --legacy-peer-deps --no-audit --no-fund && npm run build`
+- Dossier public : `frontend/dist`
+- Réécriture SPA : `/*` vers `/index.html` (HTTP 200).
+- `VITE_API_URL` : `https://urgence-sang-api.onrender.com/api/v1`.
+- `PUBLIC_API_URL` : `https://urgence-sang-api.onrender.com`.
+- `DATABASE_NAME` : `urgence_sang_db`, une base logique distincte de celle d’Élevage.
+- `DATABASE_URL` et `JWT_SECRET` : secrets dans Render uniquement.
 
-Je ne te propose ni Render ni Koyeb, et je ne recommande pas non plus Railway ou Fly.io pour un vrai gratuit durable :
-
-- Railway fonctionne surtout avec un credit d essai, pas comme une offre gratuite permanente.
-- Fly.io n offre plus un vrai hebergement gratuit durable pour les nouveaux comptes.
-- Oracle Cloud propose une vraie offre "Always Free" avec des VM utilisables sur la duree, ce qui convient bien a une API Go.
-
-### Pourquoi Oracle Cloud est le meilleur choix ici
-
-Pour ce projet, Oracle Cloud est pertinent parce que :
-
-- ton backend Go tourne tres bien sur une VM Linux
-- tu gardes le controle total du processus, des variables d environnement et du reseau
-- tu peux faire tourner ton API 24h/24
-- tu peux ajouter Nginx ou Caddy devant l API
-- tu peux aussi heberger d autres services plus tard si besoin
-
-### Recommandation concrete
-
-Je recommande cette organisation :
-
-- `frontend` sur Netlify ou Vercel
-- `backend` Go sur Oracle Cloud Always Free
-- `database` sur Supabase
-- `ai_service` sur Hugging Face Spaces Docker ou sur une seconde VM si tu veux tout centraliser
-
-### Option de deploiement du microservice IA
-
-Le microservice IA Python peut etre deploye gratuitement sur **Hugging Face Spaces** si tu veux une solution simple pour la partie IA, surtout parce qu il existe deja un `Dockerfile` dans `ai_service/`.
-
-En revanche, le backend principal qui gere l authentification, les alertes et la logique metier doit idealement rester sur Oracle Cloud pour plus de stabilite et de controle.
-
-## Deploiement recommande
-
-### Backend Go sur Oracle Cloud
-
-Etapes generales :
-
-1. Creer une VM Always Free Ubuntu ou Oracle Linux.
-2. Installer Go ou deploier via binaire/Docker.
-3. Cloner le depot.
-4. Configurer `backend/.env`.
-5. Lancer l application avec un service systemd.
-6. Mettre Nginx ou Caddy en reverse proxy.
-7. Ouvrir le port public et connecter le frontend a l URL de l API.
-
-### AI service sur Hugging Face Spaces
-
-Etapes generales :
-
-1. Creer un Space Docker.
-2. Pousser le contenu de `ai_service/`.
-3. Definir `GEMINI_API_KEY`.
-4. Recuperer l URL publique du service.
-5. Renseigner cette URL dans `AI_SERVICE_URL` si necessaire selon le flux retenu.
+Au démarrage, l’API initialise le schéma PostgreSQL/PostGIS dans sa base dédiée sans charger de compte administrateur prédéfini. Quand Supabase Storage n’est pas configuré, les fichiers sont conservés dans PostgreSQL ; les licences ne sont téléchargeables que par leur propriétaire ou un administrateur authentifié.
 
 ## Points forts du projet
 
@@ -305,9 +269,3 @@ Le depot contient deja :
 
 Urgence-Sang est une plateforme numerique d urgence transfusionnelle qui connecte les hopitaux et les donneurs de sang en temps reel. Le projet repose sur un frontend moderne, un backend robuste en Go et un microservice IA en Python pour accelerer la mobilisation des bons donneurs au bon moment.
 
-Si on fixe une decision maintenant, ma recommandation est la suivante :
-
-- backend principal : Oracle Cloud Always Free
-- base de donnees : Supabase
-- frontend : Netlify
-- microservice IA : Hugging Face Spaces ou Oracle Cloud selon le niveau de controle souhaite
