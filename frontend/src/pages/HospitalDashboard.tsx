@@ -582,7 +582,7 @@ export default function HospitalDashboard() {
               </div>
               <span className="hidden sm:inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-md border border-emerald-200 shrink-0">
                 <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-                {t('hospital_dashboard.verified')}
+                {t('hospital_dashboard.demo_account', { defaultValue: 'Compte démo' })}
               </span>
             </div>
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
