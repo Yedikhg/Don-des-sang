@@ -112,14 +112,25 @@ func (h *AuthHandler) Register(c *fiber.Ctx) error {
 		licenseURL := ""
 		licenseFile, uploadErr := utils.ExtractDocumentFile(c, "license", config.App.MaxUploadSize)
 		if uploadErr == nil {
-			licenseURL, _ = h.storage.UploadFile(licenseFile, "licenses")
+			licenseURL, err = h.storage.UploadFile(licenseFile, "licenses", userID)
+			if err != nil {
+				_, _ = database.DB.Exec("DELETE FROM users WHERE id = $1", userID)
+				return utils.ErrorResponse(c, fiber.StatusInternalServerError, "Unable to store the license document")
+			}
+		} else if _, presentErr := c.FormFile("license"); presentErr == nil {
+			_, _ = database.DB.Exec("DELETE FROM users WHERE id = $1", userID)
+			return utils.ErrorResponse(c, fiber.StatusBadRequest, uploadErr.Error())
 		}
 		verifyID := uuid.New().String()
-		_, _ = database.DB.Exec(`
+		_, err = database.DB.Exec(`
 			INSERT INTO hospital_verifications (id, user_id, hospital_name, license_url, is_verified)
 			VALUES ($1,$2,$3,$4,false)`,
 			verifyID, userID, hospitalName, licenseURL,
 		)
+		if err != nil {
+			_, _ = database.DB.Exec("DELETE FROM users WHERE id = $1", userID)
+			return utils.ErrorResponse(c, fiber.StatusInternalServerError, "Unable to create the hospital verification record")
+		}
 	}
 
 	token, err := auth.GenerateToken(userID, req.Email, req.Role)

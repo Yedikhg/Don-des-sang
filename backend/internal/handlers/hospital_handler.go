@@ -63,7 +63,12 @@ func (h *HospitalHandler) CreateAlert(c *fiber.Ctx) error {
 	videoURL := ""
 	videoFile, err := utils.ExtractVideoFile(c, "video", config.App.MaxUploadSize)
 	if err == nil {
-		videoURL, _ = h.storage.UploadFile(videoFile, "alert-videos")
+		videoURL, err = h.storage.UploadFile(videoFile, "alert-videos", hospitalID)
+		if err != nil {
+			return utils.ErrorResponse(c, fiber.StatusInternalServerError, "Unable to store the alert video")
+		}
+	} else if _, presentErr := c.FormFile("video"); presentErr == nil {
+		return utils.ErrorResponse(c, fiber.StatusBadRequest, err.Error())
 	}
 
 	expiresInHours := 2
@@ -433,15 +438,15 @@ func (h *HospitalHandler) VerifyDonor(c *fiber.Ctx) error {
 			return utils.ErrorResponse(c, fiber.StatusBadRequest, "Invalid confirmation_code")
 		}
 		code = strings.ToLower(code)
-		err = database.DB.QueryRow(fmt.Sprintf(`
+		err = database.DB.QueryRow(`
 			SELECT donor_id
 			FROM alert_responses
-			WHERE alert_id = '%s'
-			  AND LEFT(REPLACE(id::text, '-', ''), %d) = '%s'
+			WHERE alert_id = $1
+			  AND LEFT(REPLACE(id::text, '-', ''), $2) = $3
 			ORDER BY updated_at DESC
 			LIMIT 1`,
 			req.AlertID, len(code), code,
-		)).Scan(&donorID)
+		).Scan(&donorID)
 		if errors.Is(err, sql.ErrNoRows) {
 			return utils.ErrorResponse(c, fiber.StatusNotFound, "Invalid confirmation code for this alert")
 		}

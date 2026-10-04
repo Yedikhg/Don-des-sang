@@ -128,3 +128,15 @@ CREATE TABLE IF NOT EXISTS impact_logs (
     UNIQUE(alert_id)
 );
 CREATE INDEX IF NOT EXISTS idx_impact_alert ON impact_logs(alert_id);
+
+-- Persistent fallback for deployments without an external storage provider.
+CREATE TABLE IF NOT EXISTS uploaded_files (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    owner_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    bucket TEXT NOT NULL CHECK (bucket IN ('licenses', 'alert-videos')),
+    stored_name TEXT NOT NULL,
+    content_type TEXT NOT NULL,
+    data BYTEA NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE (bucket, stored_name)
+);

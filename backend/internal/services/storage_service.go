@@ -5,9 +5,13 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"net/url"
+	"os"
+	"strings"
 	"time"
 
 	"urgence-sang/internal/config"
+	"urgence-sang/internal/database"
 	"urgence-sang/pkg/utils"
 )
 
@@ -25,9 +29,24 @@ func NewStorageService() *StorageService {
 	}
 }
 
-func (s *StorageService) UploadFile(file *utils.UploadedFile, bucket string) (string, error) {
+func (s *StorageService) UploadFile(file *utils.UploadedFile, bucket, ownerID string) (string, error) {
 	if s.supabaseURL == "" {
-		return fmt.Sprintf("https://mock-storage.local/%s/%s", bucket, file.StoredName), nil
+		base := strings.TrimRight(os.Getenv("PUBLIC_API_URL"), "/")
+		if base == "" || database.DB == nil {
+			return "", fmt.Errorf("persistent file storage is not configured")
+		}
+		if bucket != "licenses" && bucket != "alert-videos" {
+			return "", fmt.Errorf("invalid file bucket")
+		}
+		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+		defer cancel()
+		_, err := database.DB.ExecContext(ctx, `
+			INSERT INTO uploaded_files (owner_id, bucket, stored_name, content_type, data)
+			VALUES ($1, $2, $3, $4, $5)`, ownerID, bucket, file.StoredName, file.ContentType, file.Data)
+		if err != nil {
+			return "", fmt.Errorf("persisting uploaded file: %w", err)
+		}
+		return base + "/api/v1/files/" + bucket + "/" + url.PathEscape(file.StoredName), nil
 	}
 	uploadURL := fmt.Sprintf("%s/storage/v1/object/%s/%s", s.supabaseURL, bucket, file.StoredName)
 	req, err := http.NewRequestWithContext(context.Background(), http.MethodPost, uploadURL, bytes.NewReader(file.Data))

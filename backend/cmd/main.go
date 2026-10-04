@@ -98,6 +98,9 @@ func registerRoutes(api fiber.Router) {
 	hospH := handlers.NewHospitalHandler()
 	donorH := handlers.NewDonorHandler()
 	adminH := handlers.NewAdminHandler()
+	filesH := handlers.NewFileHandler()
+	api.Get("/files/alert-videos/:name", filesH.Video)
+	api.Get("/files/licenses/:name", auth.RequireAuth, filesH.License)
 
 	// ── Auth (public) ─────────────────────────────────────────────────────────
 	a := api.Group("/auth")
