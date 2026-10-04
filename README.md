@@ -6,8 +6,9 @@ Urgence-Sang est une plateforme communautaire de mise en relation entre hopitaux
 
 - **Interface :** https://urgence-sang-web.onrender.com
 - **API :** https://urgence-sang-api.onrender.com/health
+- **Assistant :** https://urgence-sang-assistant.onrender.com/health
 
-Démonstration publique : utiliser uniquement des données fictives. Le parcours inscription, connexion, alerte compatible à proximité, réponse, confirmation par l’hôpital et historique a été testé sur le serveur déployé. Ce site ne doit pas servir à traiter une urgence médicale réelle : la validation administrative des hôpitaux, les notifications Firebase et le microservice IA distant ne sont pas opérationnels dans cette démonstration.
+Démonstration publique : utiliser uniquement des données fictives. Le parcours inscription, connexion, alerte compatible à proximité, réponse, confirmation par l’hôpital et historique a été testé sur le serveur déployé. Ce site ne doit pas servir à traiter une urgence médicale réelle : la validation administrative des hôpitaux et les notifications Firebase ne sont pas opérationnelles dans cette démonstration. Le service de classement et l’assistant sont déployés séparément ; l’assistant fonctionne sans clé Gemini comme guide de démonstration, sans verdict d’aptitude médicale.
 
 Les services gratuits peuvent redémarrer lentement après inactivité. La base gratuite actuelle expire le **31 octobre 2026** ; conserver le service après cette date exige une sauvegarde et une migration ou un renouvellement.
 

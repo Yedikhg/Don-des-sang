@@ -1,4 +1,4 @@
-﻿import os
+import os
 import json
 import requests
 from dotenv import load_dotenv
@@ -9,14 +9,13 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
 
 SCREENING_SYSTEM_PROMPT = (
-    "Tu es un assistant medical bienveillant de l application Urgence-Sang au Maroc. "
-    "Ton role est d evaluer rapidement si un donneur est apte a donner du sang aujourd hui. "
-    "Criteres : age 18-65 ans, poids min 50 kg, dernier don > 8 semaines (homme) ou 12 semaines (femme), "
-    "aucune maladie grave recente, aucun anticoagulant, pas de tatouage/piercing depuis 6 mois. "
-    "Pose UNE seule question a la fois en francais simple. Sois chaleureux. "
-    "Si toutes les conditions sont remplies, dis explicitement : Vous etes eligible pour donner aujourd hui ! "
-    "Sinon, explique gentiment pourquoi et conseille d attendre. "
-    "Maximum 5 echanges. Commence par demander si la personne peut se deplacer maintenant."
+    "Tu es l assistant de demonstration de l application Urgence-Sang. "
+    "Tu peux expliquer comment creer un compte, declarer sa disponibilite, "
+    "consulter une alerte et contacter un centre de don. "
+    "Ne determine jamais l aptitude medicale au don et ne donne aucun diagnostic. "
+    "Seul un professionnel du centre de don peut confirmer cette aptitude. "
+    "Si une urgence reelle est evoquee, demande de contacter les secours locaux. "
+    "Rappelle que ce site utilise des donnees fictives. Reponds en francais simple."
 )
 
 MOTIVATION_SYSTEM_PROMPT = (
@@ -89,39 +88,38 @@ def _call_gemini(system_prompt, user_message, history=None):
 
 
 def _rule_based_chat(message, history):
-    """
-    Chatbot de secours base sur des regles medicales.
-    Utilise quand Gemini est indisponible.
-    """
-    step = len([m for m in (history or []) if m.get("role") in ("model", "assistant")])
-    msg_lower = message.lower()
-
-    # Detection des reponses negatives aux questions de screening
-    negative_keywords = ["non", "no", "pas", "ne pas", "malade", "medicament",
-                         "moins de", "tatouage", "piercing", "la semaine", "hier",
-                         "je ne peux pas", "impossible", "30", "35", "40", "45"]
-
-    if any(k in msg_lower for k in negative_keywords):
-        return {
-            "reply": (
-                "Merci pour votre honnetet. Pour des raisons de securite medicale, "
-                "il vaut mieux ne pas donner aujourd hui. "
-                "Revenez quand vous vous sentirez mieux — votre sante passe en premier !"
-            ),
-            "eligible": False
-        }
-
-    if step < len(_SCREENING_STEPS):
-        return {"reply": _SCREENING_STEPS[step], "eligible": None}
-
-    return {
-        "reply": (
-            "Merci pour vos reponses ! D apres vos informations, "
-            "vous etes eligible pour donner aujourd hui. "
-            "Rendez-vous a l hopital muni de votre piece d identite. Merci d etre un heros !"
-        ),
-        "eligible": True
-    }
+    """Guide de demonstration, sans decision d aptitude medicale."""
+    msg = message.lower()
+    if any(k in msg for k in ("malade", "medicament", "poids", "age", "tatouage", "piercing", "eligible", "apte")):
+        reply = (
+            "Cet assistant de demonstration ne peut pas confirmer votre aptitude au don. "
+            "Contactez un centre de don : son equipe medicale vous indiquera les conditions "
+            "et effectuera l evaluation necessaire."
+        )
+    elif any(k in msg for k in ("urgence", "accident", "saigne")):
+        reply = (
+            "Pour une urgence reelle, contactez les secours locaux ou un etablissement de soins. "
+            "Cette application est une demonstration avec des donnees fictives."
+        )
+    elif any(k in msg for k in ("alerte", "hopital", "proche")):
+        reply = (
+            "Dans le tableau de bord donneur, ouvrez les alertes a proximite. "
+            "Vous pouvez consulter une alerte compatible et choisir de repondre dans ce parcours de demonstration."
+        )
+    elif any(k in msg for k in ("compte", "inscri", "commenc")):
+        reply = (
+            "Pour essayer l application, creez un compte donneur avec des informations fictives, "
+            "choisissez un groupe sanguin de test puis une position de demonstration. "
+            "Vous pourrez ensuite ouvrir votre tableau de bord."
+        )
+    else:
+        reply = (
+            "Bonjour ! Je peux vous guider dans la demonstration d Urgence-Sang : "
+            "inscription, disponibilite et consultation des alertes. "
+            "Les donnees sont fictives ; seul un professionnel d un centre de don "
+            "peut confirmer l aptitude medicale au don. Que souhaitez-vous essayer ?"
+        )
+    return {"reply": reply, "eligible": None}
 
 
 def chat_with_donor(message, history=None, donor_name="", blood_type=""):
@@ -139,14 +137,7 @@ def chat_with_donor(message, history=None, donor_name="", blood_type=""):
     if reply is None:
         return _rule_based_chat(message, history)
 
-    eligible = None
-    reply_lower = reply.lower()
-    if "etes eligible" in reply_lower or "vous etes apte" in reply_lower:
-        eligible = True
-    elif any(p in reply_lower for p in ["pas eligible", "ne pouvez pas", "deconseille", "attendez"]):
-        eligible = False
-
-    return {"reply": reply, "eligible": eligible}
+    return {"reply": reply, "eligible": None}
 
 
 def generate_motivation(donor_name, blood_type, hospital_name, distance_km, urgency="high"):
