@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"os"
 	"time"
 
 	"urgence-sang/internal/auth"
@@ -19,6 +20,17 @@ import (
 
 func main() {
 	config.Load()
+
+	if name := os.Getenv("DATABASE_NAME"); name != "" {
+		ctx, cancel := context.WithTimeout(context.Background(), 90*time.Second)
+		dsn, err := database.Initialize(ctx, config.App.DatabaseURL, name)
+		cancel()
+		if err != nil {
+			log.Fatalf("Database initialization failed: %v", err)
+		}
+		config.App.DatabaseURL = dsn
+		log.Println("Application database initialized")
+	}
 
 	if config.App.DatabaseURL != "" {
 		if err := database.Connect(config.App.DatabaseURL); err != nil {

@@ -1,4 +1,4 @@
-﻿-- Urgence-Sang PostgreSQL + PostGIS Schema
+-- Urgence-Sang PostgreSQL + PostGIS Schema
 CREATE EXTENSION IF NOT EXISTS postgis;
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
@@ -49,10 +49,13 @@ CREATE TABLE IF NOT EXISTS alerts (
     latitude       DECIMAL(10,8) NOT NULL DEFAULT 0,
     longitude      DECIMAL(11,8) NOT NULL DEFAULT 0,
     completed_at   TIMESTAMPTZ,
+    expires_at     TIMESTAMPTZ NOT NULL DEFAULT (NOW() + interval '2 hours'),
     created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at     TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 CREATE INDEX IF NOT EXISTS idx_alerts_hospital ON alerts(hospital_id);
+ALTER TABLE alerts ADD COLUMN IF NOT EXISTS expires_at TIMESTAMPTZ NOT NULL DEFAULT (NOW() + interval '2 hours');
+CREATE INDEX IF NOT EXISTS idx_alerts_expiry ON alerts(expires_at) WHERE status = 'active';
 CREATE INDEX IF NOT EXISTS idx_alerts_status   ON alerts(status);
 CREATE INDEX IF NOT EXISTS idx_alerts_blood    ON alerts(blood_type);
 CREATE INDEX IF NOT EXISTS idx_alerts_created  ON alerts(created_at DESC);
@@ -97,6 +100,17 @@ CREATE TABLE IF NOT EXISTS blood_types (
     is_universal_donor    BOOLEAN NOT NULL DEFAULT false,
     is_universal_recipient BOOLEAN NOT NULL DEFAULT false
 );
+
+INSERT INTO blood_types (code, label, is_universal_donor, is_universal_recipient) VALUES
+    ('O-', 'O Rhésus Négatif', true, false),
+    ('O+', 'O Rhésus Positif', false, false),
+    ('A-', 'A Rhésus Négatif', false, false),
+    ('A+', 'A Rhésus Positif', false, false),
+    ('B-', 'B Rhésus Négatif', false, false),
+    ('B+', 'B Rhésus Positif', false, false),
+    ('AB-', 'AB Rhésus Négatif', false, false),
+    ('AB+', 'AB Rhésus Positif', false, true)
+ON CONFLICT (code) DO NOTHING;
 
 -- ── impact_logs (journal d'audit pour le jury) ───────────────────────────────
 -- Prouve l'efficacité du système : combien de donneurs alertés → combien arrivés.

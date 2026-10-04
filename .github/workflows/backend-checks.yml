@@ -17,6 +17,22 @@ permissions:
 jobs:
   database-and-build:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgis/postgis:16-3.5
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_TEST_URL: postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
     defaults:
       run:
         working-directory: backend
@@ -28,3 +44,4 @@ jobs:
           cache-dependency-path: backend/go.sum
       - run: go test ./internal/database
       - run: go build -o /tmp/urgence-sang-api ./cmd/main.go
+
